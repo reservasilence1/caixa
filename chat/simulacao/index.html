@@ -172,6 +172,17 @@
         border-radius: 10px;
         width: 0%;
       }
+
+      /* Animação da barra via CSS */
+      @keyframes progressFill {
+        0% { width: 0%; }
+        100% { width: 100%; }
+      }
+      @-webkit-keyframes progressFill {
+        0% { width: 0%; }
+        100% { width: 100%; }
+      }
+
       .loading-dots span {
         display: inline-block;
         width: 8px;
@@ -643,28 +654,38 @@
           } catch (e) {}
         }
 
+        // ------- Helpers de formatação BR (sem toLocaleString com options) -------
+        function formatNumberBR(value) {
+          var negative = value < 0;
+          value = Math.abs(value);
+          var fixed = value.toFixed(2); // "1234.56"
+          var parts = fixed.split(".");
+          var integer = parts[0];
+          var decimal = parts[1];
+          var withDots = integer.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+          return (negative ? "-" : "") + withDots + "," + decimal;
+        }
+
+        function formatCurrency(value) {
+          return "R$ " + formatNumberBR(value);
+        }
+
         // Formatar valor de crédito enquanto digita e limitar a 30.000
         creditValue.addEventListener("input", function (e) {
-          var value = e.target.value.replace(/\D/g, "");
+          var onlyDigits = e.target.value.replace(/\D/g, "");
 
-          if (value === "") {
+          if (onlyDigits === "") {
             e.target.value = "";
             return;
           }
 
-          var floatValue = parseFloat(value) / 100;
+          var floatValue = parseFloat(onlyDigits) / 100;
 
           if (floatValue > 30000) {
             floatValue = 30000;
-            value = "3000000";
           }
 
-          e.target.value = floatValue
-            .toLocaleString("pt-BR", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })
-            .replace(".", ",");
+          e.target.value = formatNumberBR(floatValue);
 
           if (selectedDuration) {
             updateLoanCalculation(floatValue, selectedDuration);
@@ -674,7 +695,7 @@
         // Variável para armazenar a duração selecionada
         var selectedDuration = null;
 
-        // Botões de duração (sem forEach, para suportar Safari antigo)
+        // Botões de duração (sem forEach)
         var durationButtons = document.querySelectorAll(".duration-btn");
         for (var i = 0; i < durationButtons.length; i++) {
           durationButtons[i].addEventListener("click", function () {
@@ -700,7 +721,8 @@
 
             selectedDuration = parseInt(this.getAttribute("data-months"), 10);
 
-            var loanAmount = parseFloat(creditValue.value.replace(/\D/g, "")) / 100;
+            var raw = creditValue.value.replace(/\D/g, "");
+            var loanAmount = parseFloat(raw) / 100;
             if (!isNaN(loanAmount)) {
               updateLoanCalculation(loanAmount, selectedDuration);
             }
@@ -736,19 +758,6 @@
             totalAmountEl.textContent = formatCurrency(totalAmount);
         }
 
-        // Função auxiliar para formatar valores monetários
-        function formatCurrency(value) {
-          return (
-            "R$ " +
-            value
-              .toLocaleString("pt-BR", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-              })
-              .replace(".", ",")
-          );
-        }
-
         // Etapa 1 -> Etapa 2
         btnContinue.addEventListener("click", function () {
           if (!creditValue.value) {
@@ -761,8 +770,8 @@
             return;
           }
 
-          var loanAmount =
-            parseFloat(creditValue.value.replace(/\D/g, "")) / 100;
+          var rawLoan = creditValue.value.replace(/\D/g, "");
+          var loanAmount = parseFloat(rawLoan) / 100;
 
           var approvedValue = Math.max(loanAmount - 22, 0);
 
@@ -772,12 +781,7 @@
             (approvedValue * (monthlyRate * pow)) / (pow - 1);
           var totalAmount = installmentValue * selectedDuration;
 
-          var formattedValue = approvedValue
-            .toLocaleString("pt-BR", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })
-            .replace(".", ",");
+          var formattedValue = formatNumberBR(approvedValue);
 
           if (approvedValueEl) {
             approvedValueEl.textContent = "R$ " + formattedValue;
@@ -860,19 +864,19 @@
           var check3 = document.getElementById("check3");
 
           setTimeout(function () {
-            animateProgress(progress1, 100, 1500, function () {
+            animateProgress(progress1, 1500, function () {
               if (check1) check1.classList.add("active");
             });
           }, 500);
 
           setTimeout(function () {
-            animateProgress(progress2, 100, 1800, function () {
+            animateProgress(progress2, 1800, function () {
               if (check2) check2.classList.add("active");
             });
           }, 2000);
 
           setTimeout(function () {
-            animateProgress(progress3, 100, 2000, function () {
+            animateProgress(progress3, 2000, function () {
               if (check3) check3.classList.add("active");
 
               setTimeout(function () {
@@ -883,35 +887,29 @@
           }, 4000);
         }
 
-        // Animação da barra de progresso usando setInterval (compatível)
-        function animateProgress(element, target, duration, callback) {
+        // Animação da barra de progresso usando CSS animation
+        function animateProgress(element, duration, callback) {
           if (!element) {
             if (typeof callback === "function") callback();
             return;
           }
 
-          var startTime = new Date().getTime();
-          var fps = 60;
-          var interval = 1000 / fps;
-
+          // reset
           element.style.width = "0%";
+          element.style.animation = "none";
+          element.style.webkitAnimation = "none";
 
-          var timer = setInterval(function () {
-            var now = new Date().getTime();
-            var elapsed = now - startTime;
-            var progress = elapsed / duration;
-            if (progress > 1) progress = 1;
+          // Forçar reflow para reiniciar animação
+          void element.offsetHeight;
 
-            var value = progress * target;
-            element.style.width = value + "%";
+          var seconds = duration / 1000;
 
-            if (progress >= 1) {
-              clearInterval(timer);
-              if (typeof callback === "function") {
-                callback();
-              }
-            }
-          }, interval);
+          element.style.animation = "progressFill " + seconds + "s linear forwards";
+          element.style.webkitAnimation = "progressFill " + seconds + "s linear forwards";
+
+          if (typeof callback === "function") {
+            setTimeout(callback, duration + 50);
+          }
         }
       });
     </script>
