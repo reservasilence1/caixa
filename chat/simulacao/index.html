@@ -94,6 +94,7 @@
         );
         transform: rotate(30deg);
         animation: shine 4s infinite;
+        -webkit-animation: shine 4s infinite;
       }
       @keyframes shine {
         0% {
@@ -109,8 +110,23 @@
           opacity: 0;
         }
       }
+      @-webkit-keyframes shine {
+        0% {
+          left: -100%;
+          opacity: 0;
+        }
+        10% {
+          left: 100%;
+          opacity: 0.6;
+        }
+        100% {
+          left: 100%;
+          opacity: 0;
+        }
+      }
       .floating {
         animation: float 3s ease-in-out infinite;
+        -webkit-animation: float 3s ease-in-out infinite;
       }
       @keyframes float {
         0% {
@@ -121,6 +137,17 @@
         }
         100% {
           transform: translateY(0px);
+        }
+      }
+      @-webkit-keyframes float {
+        0% {
+          -webkit-transform: translateY(0px);
+        }
+        50% {
+          -webkit-transform: translateY(-10px);
+        }
+        100% {
+          -webkit-transform: translateY(0px);
         }
       }
       .icon-circle {
@@ -156,12 +183,15 @@
       }
       .loading-dots span:nth-child(1) {
         animation: pulse 1s infinite alternate;
+        -webkit-animation: pulse 1s infinite alternate;
       }
       .loading-dots span:nth-child(2) {
         animation: pulse 1s 0.2s infinite alternate;
+        -webkit-animation: pulse 1s 0.2s infinite alternate;
       }
       .loading-dots span:nth-child(3) {
         animation: pulse 1s 0.4s infinite alternate;
+        -webkit-animation: pulse 1s 0.4s infinite alternate;
       }
       @keyframes pulse {
         0% {
@@ -170,6 +200,16 @@
         }
         100% {
           transform: scale(1.5);
+          opacity: 1;
+        }
+      }
+      @-webkit-keyframes pulse {
+        0% {
+          -webkit-transform: scale(1);
+          opacity: 0.6;
+        }
+        100% {
+          -webkit-transform: scale(1.5);
           opacity: 1;
         }
       }
@@ -182,24 +222,31 @@
         align-items: center;
         justify-content: center;
         transform: scale(0);
+        -webkit-transform: scale(0);
         transition: transform 0.3s ease;
+        -webkit-transition: -webkit-transform 0.3s ease;
       }
       .check-circle.active {
         transform: scale(1);
+        -webkit-transform: scale(1);
       }
       .simulation-step {
         display: none;
         opacity: 0;
         transform: translateY(20px);
+        -webkit-transform: translateY(20px);
         transition: opacity 0.5s ease, transform 0.5s ease;
+        -webkit-transition: opacity 0.5s ease, -webkit-transform 0.5s ease;
       }
       .simulation-step.active {
         display: block;
         opacity: 1;
         transform: translateY(0);
+        -webkit-transform: translateY(0);
       }
       .pulse {
         animation: pulse-animation 2s infinite;
+        -webkit-animation: pulse-animation 2s infinite;
       }
       @keyframes pulse-animation {
         0% {
@@ -212,8 +259,20 @@
           box-shadow: 0 0 0 0 rgba(238, 219, 45, 0);
         }
       }
+      @-webkit-keyframes pulse-animation {
+        0% {
+          box-shadow: 0 0 0 0 rgba(255, 221, 29, 0.4);
+        }
+        70% {
+          box-shadow: 0 0 0 15px rgba(238, 219, 45, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(238, 219, 45, 0);
+        }
+      }
       .fade-in {
         animation: fadeIn 0.5s ease-in-out forwards;
+        -webkit-animation: fadeIn 0.5s ease-in-out forwards;
       }
       @keyframes fadeIn {
         from {
@@ -223,6 +282,16 @@
         to {
           opacity: 1;
           transform: translateY(0);
+        }
+      }
+      @-webkit-keyframes fadeIn {
+        from {
+          opacity: 0;
+          -webkit-transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          -webkit-transform: translateY(0);
         }
       }
       .page-transition {
@@ -464,7 +533,7 @@
               </div>
             </div>
 
-            <!-- Resumo do empréstimo aprovado - Ajustes para mostrar valor aprovado -->
+            <!-- Resumo do empréstimo aprovado -->
             <div class="bg-white rounded-xl shadow-sm p-5 mb-6">
               <h2 class="text-lg font-semibold text-gray-700 mb-3">
                 Resumo do seu empréstimo
@@ -527,42 +596,64 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        // --------- PARSE MANUAL DA QUERY (sem URLSearchParams) ---------
+        function parseQuery() {
+          var qs = window.location.search || "";
+          var obj = {};
+          if (qs.indexOf("?") === 0) {
+            qs = qs.substring(1);
+          }
+          if (!qs) return obj;
+          var parts = qs.split("&");
+          for (var i = 0; i < parts.length; i++) {
+            var pair = parts[i].split("=");
+            var key = decodeURIComponent(pair[0] || "");
+            var val = decodeURIComponent(pair[1] || "");
+            if (key) obj[key] = val;
+          }
+          return obj;
+        }
+
+        var queryParams = parseQuery();
+
         // Elementos das etapas
-        const step1 = document.getElementById("step1");
-        const step2 = document.getElementById("step2");
-        const step3 = document.getElementById("step3");
+        var step1 = document.getElementById("step1");
+        var step2 = document.getElementById("step2");
+        var step3 = document.getElementById("step3");
 
         // Botões
-        const btnContinue = document.getElementById("btnContinue");
-        const btnRequest = document.getElementById("btnRequest");
+        var btnContinue = document.getElementById("btnContinue");
+        var btnRequest = document.getElementById("btnRequest");
 
         // Elementos de formulário
-        const creditValue = document.getElementById("creditValue");
+        var creditValue = document.getElementById("creditValue");
+        var approvedValueEl = document.getElementById("approvedValue");
 
-        // Definir nome do usuário (pode ser dinâmico com parâmetros URL)
-        const urlParams = new URLSearchParams(window.location.search);
-        const name = urlParams.get("nome") || "Cliente";
-        document.getElementById("userName").textContent = name;
+        // Nome do usuário
+        var name = queryParams.nome || "Cliente";
+        var userNameEl = document.getElementById("userName");
+        if (userNameEl) {
+          userNameEl.textContent = name;
+        }
 
-        // Salvar o nome do usuário no localStorage se estiver disponível na URL
-        if (urlParams.get("nome")) {
-          localStorage.setItem("nomeUsuario", urlParams.get("nome"));
-          console.log("Nome salvo no localStorage:", urlParams.get("nome"));
+        // Salvar nome no localStorage se veio na URL
+        if (queryParams.nome) {
+          try {
+            localStorage.setItem("nomeUsuario", queryParams.nome);
+          } catch (e) {}
         }
 
         // Formatar valor de crédito enquanto digita e limitar a 30.000
         creditValue.addEventListener("input", function (e) {
-          let value = e.target.value.replace(/\D/g, "");
+          var value = e.target.value.replace(/\D/g, "");
 
           if (value === "") {
             e.target.value = "";
             return;
           }
 
-          // Converter para float e formatar
-          let floatValue = parseFloat(value) / 100;
+          var floatValue = parseFloat(value) / 100;
 
-          // Limitar a 30.000
           if (floatValue > 30000) {
             floatValue = 30000;
             value = "3000000";
@@ -571,35 +662,34 @@
           e.target.value = floatValue
             .toLocaleString("pt-BR", {
               minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
+              maximumFractionDigits: 2
             })
             .replace(".", ",");
 
-          // Atualizar preview se um prazo já tiver sido selecionado
           if (selectedDuration) {
             updateLoanCalculation(floatValue, selectedDuration);
           }
         });
 
         // Variável para armazenar a duração selecionada
-        let selectedDuration = null;
+        var selectedDuration = null;
 
-        // Adicionar evento de clique aos botões de duração
-        const durationButtons = document.querySelectorAll(".duration-btn");
-        durationButtons.forEach((button) => {
-          button.addEventListener("click", function () {
-            // Resetar todos os botões para o estado padrão (não selecionado)
-            durationButtons.forEach((btn) => {
-              btn.classList.remove("bg-shopee", "border-shopee", "text-white");
-              btn.classList.add(
+        // Botões de duração (sem forEach, para suportar Safari antigo)
+        var durationButtons = document.querySelectorAll(".duration-btn");
+        for (var i = 0; i < durationButtons.length; i++) {
+          durationButtons[i].addEventListener("click", function () {
+            // reset de todos
+            for (var j = 0; j < durationButtons.length; j++) {
+              durationButtons[j].classList.remove("bg-shopee", "border-shopee", "text-white");
+              durationButtons[j].classList.add(
                 "border-gray-300",
                 "text-gray-800",
                 "bg-white",
                 "hover:bg-gray-50"
               );
-            });
+            }
 
-            // Estilo do botão selecionado
+            // selecionado
             this.classList.remove(
               "border-gray-300",
               "text-gray-800",
@@ -608,45 +698,42 @@
             );
             this.classList.add("bg-shopee", "border-shopee", "text-white");
 
-            // Armazenar duração selecionada
-            selectedDuration = parseInt(this.getAttribute("data-months"));
+            selectedDuration = parseInt(this.getAttribute("data-months"), 10);
 
-            // Atualizar cálculo do empréstimo
-            const loanAmount =
-              parseFloat(creditValue.value.replace(/\D/g, "")) / 100;
-            updateLoanCalculation(loanAmount, selectedDuration);
+            var loanAmount = parseFloat(creditValue.value.replace(/\D/g, "")) / 100;
+            if (!isNaN(loanAmount)) {
+              updateLoanCalculation(loanAmount, selectedDuration);
+            }
           });
-        });
+        }
 
         // Função para calcular e atualizar o resumo do empréstimo
         function updateLoanCalculation(amount, months) {
           if (isNaN(amount) || amount <= 0 || !months) return;
 
-          // Mostrar o preview
-          const resultPreview = document.getElementById("resultPreview");
-          resultPreview.classList.remove("hidden");
+          var resultPreview = document.getElementById("resultPreview");
+          if (resultPreview) {
+            resultPreview.classList.remove("hidden");
+          }
 
-          // Atualizar valores solicitados
-          document.getElementById("requestedAmount").textContent =
-            formatCurrency(amount);
-          document.getElementById(
-            "loanDuration"
-          ).textContent = `${months} meses`;
+          var requestedAmountEl = document.getElementById("requestedAmount");
+          var loanDurationEl = document.getElementById("loanDuration");
+          var installmentAmountEl = document.getElementById("installmentAmount");
+          var totalAmountEl = document.getElementById("totalAmount");
 
-          // Calcular valor com juros (0.81% ao mês)
-          const monthlyRate = 0.0081; // 0.81% ao mês
+          if (requestedAmountEl) requestedAmountEl.textContent = formatCurrency(amount);
+          if (loanDurationEl) loanDurationEl.textContent = months + " meses";
 
-          // Cálculo do valor da parcela usando a fórmula de amortização
-          const installmentValue =
-            (amount * (monthlyRate * Math.pow(1 + monthlyRate, months))) /
-            (Math.pow(1 + monthlyRate, months) - 1);
-          const totalAmount = installmentValue * months;
+          var monthlyRate = 0.0081;
+          var pow = Math.pow(1 + monthlyRate, months);
+          var installmentValue =
+            (amount * (monthlyRate * pow)) / (pow - 1);
+          var totalAmount = installmentValue * months;
 
-          // Atualizar valores calculados
-          document.getElementById("installmentAmount").textContent =
-            formatCurrency(installmentValue);
-          document.getElementById("totalAmount").textContent =
-            formatCurrency(totalAmount);
+          if (installmentAmountEl)
+            installmentAmountEl.textContent = formatCurrency(installmentValue);
+          if (totalAmountEl)
+            totalAmountEl.textContent = formatCurrency(totalAmount);
         }
 
         // Função auxiliar para formatar valores monetários
@@ -656,13 +743,13 @@
             value
               .toLocaleString("pt-BR", {
                 minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
+                maximumFractionDigits: 2
               })
               .replace(".", ",")
           );
         }
 
-        // Simulação - Etapa 1 para Etapa 2
+        // Etapa 1 -> Etapa 2
         btnContinue.addEventListener("click", function () {
           if (!creditValue.value) {
             alert("Por favor, digite um valor para simular.");
@@ -674,121 +761,120 @@
             return;
           }
 
-          // Obter o valor digitado
-          const loanAmount =
+          var loanAmount =
             parseFloat(creditValue.value.replace(/\D/g, "")) / 100;
 
-          // Valor aprovado é o valor solicitado menos R$ 22,00
-          const approvedValue = Math.max(loanAmount - 22, 0);
+          var approvedValue = Math.max(loanAmount - 22, 0);
 
-          // Calcular valor com juros (0.81% ao mês) baseado no valor APROVADO
-          const monthlyRate = 0.0081; // 0.81% ao mês
-          const installmentValue =
-            (approvedValue *
-              (monthlyRate * Math.pow(1 + monthlyRate, selectedDuration))) /
-            (Math.pow(1 + monthlyRate, selectedDuration) - 1);
-          const totalAmount = installmentValue * selectedDuration;
+          var monthlyRate = 0.0081;
+          var pow = Math.pow(1 + monthlyRate, selectedDuration);
+          var installmentValue =
+            (approvedValue * (monthlyRate * pow)) / (pow - 1);
+          var totalAmount = installmentValue * selectedDuration;
 
-          // Formatar valor aprovado
-          const formattedValue = approvedValue
+          var formattedValue = approvedValue
             .toLocaleString("pt-BR", {
               minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
+              maximumFractionDigits: 2
             })
             .replace(".", ",");
 
-          // Atualizar o valor aprovado exibido
-          document.getElementById("approvedValue").textContent =
-            "R$ " + formattedValue;
+          if (approvedValueEl) {
+            approvedValueEl.textContent = "R$ " + formattedValue;
+          }
 
-          // Salvar valor aprovado e detalhes do empréstimo no localStorage
-          localStorage.setItem("creditoAprovado", formattedValue);
-          localStorage.setItem("creditoAprovadoValor", approvedValue);
-          localStorage.setItem("creditoDuracao", selectedDuration);
-          localStorage.setItem("creditoParcela", installmentValue.toFixed(2));
-          localStorage.setItem("creditoTotal", totalAmount.toFixed(2));
-          localStorage.setItem("creditoSolicitado", loanAmount.toFixed(2));
+          try {
+            localStorage.setItem("creditoAprovado", formattedValue);
+            localStorage.setItem("creditoAprovadoValor", approvedValue);
+            localStorage.setItem("creditoDuracao", selectedDuration);
+            localStorage.setItem("creditoParcela", installmentValue.toFixed(2));
+            localStorage.setItem("creditoTotal", totalAmount.toFixed(2));
+            localStorage.setItem("creditoSolicitado", loanAmount.toFixed(2));
+          } catch (e) {}
 
-          // Preencher os valores no resumo da etapa final
-          document.getElementById("finalApprovedAmount").textContent =
-            formatCurrency(approvedValue);
-          document.getElementById(
-            "finalLoanDuration"
-          ).textContent = `${selectedDuration} meses`;
-          document.getElementById("finalInstallmentAmount").textContent =
-            formatCurrency(installmentValue);
-          document.getElementById("finalTotalAmount").textContent =
-            formatCurrency(totalAmount);
-          document.getElementById("userName2").textContent = name;
+          var finalApprovedAmount = document.getElementById("finalApprovedAmount");
+          var finalLoanDuration = document.getElementById("finalLoanDuration");
+          var finalInstallmentAmount = document.getElementById("finalInstallmentAmount");
+          var finalTotalAmount = document.getElementById("finalTotalAmount");
+          var userName2 = document.getElementById("userName2");
 
-          // Mudar para etapa 2 (processando)
+          if (finalApprovedAmount) finalApprovedAmount.textContent = formatCurrency(approvedValue);
+          if (finalLoanDuration) finalLoanDuration.textContent = selectedDuration + " meses";
+          if (finalInstallmentAmount) finalInstallmentAmount.textContent = formatCurrency(installmentValue);
+          if (finalTotalAmount) finalTotalAmount.textContent = formatCurrency(totalAmount);
+          if (userName2) userName2.textContent = name;
+
           step1.classList.remove("active");
           step2.classList.add("active");
 
-          // Iniciar simulação de progresso
           runVerificationProcess();
         });
 
-        // Simulação - Etapa 3 para redirecionamento
+        // Etapa 3 -> Redirecionamento
         btnRequest.addEventListener("click", function () {
-          // Obter o CPF e nome diretamente dos parâmetros da URL atual
-          const urlParams = new URLSearchParams(window.location.search);
-          const cpf = urlParams.get("cpf") || "";
-          const nomeUsuario = urlParams.get("nome") || "";
+          var cpf = queryParams.cpf || "";
+          var nomeUsuario = queryParams.nome || "";
 
-          // Obter o valor aprovado do localStorage
-          const valorAprovado =
-            localStorage.getItem("creditoAprovadoValor") || "";
-
-          // Criar um novo objeto URLSearchParams para a nova URL
-          const novaUrl = new URLSearchParams();
-
-          // Adicionar todos os parâmetros atuais à nova URL
-          for (const [chave, valor] of urlParams.entries()) {
-            novaUrl.append(chave, valor);
+          var currentQuery = window.location.search || "";
+          if (currentQuery.indexOf("?") === 0) {
+            currentQuery = currentQuery.substring(1);
           }
 
-          // Adicionar ou atualizar parâmetros específicos
-          novaUrl.set("cpf", cpf);
-
-          // Adicionar o nome se disponível
-          if (nomeUsuario) {
-            novaUrl.set("nome", nomeUsuario);
+          var paramsArray = [];
+          if (currentQuery) {
+            paramsArray = currentQuery.split("&");
           }
 
-          // Redirecionar para a página de pagamento com todos os parâmetros
-          window.location.href = `/chat/pagamento/index.html?${novaUrl.toString()}`;
+          function upsertParam(key, value) {
+            var found = false;
+            for (var i = 0; i < paramsArray.length; i++) {
+              if (paramsArray[i].split("=")[0] === key) {
+                paramsArray[i] = key + "=" + encodeURIComponent(value);
+                found = true;
+                break;
+              }
+            }
+            if (!found) {
+              paramsArray.push(key + "=" + encodeURIComponent(value));
+            }
+          }
+
+          if (cpf) upsertParam("cpf", cpf);
+          if (nomeUsuario) upsertParam("nome", nomeUsuario);
+
+          var newQuery = paramsArray.join("&");
+          var newUrl = "/chat/pagamento/index.html";
+          if (newQuery) {
+            newUrl += "?" + newQuery;
+          }
+          window.location.href = newUrl;
         });
 
-        // Função para simular o processo de verificação
+        // Simular processo de verificação (animação das barras)
         function runVerificationProcess() {
-          const progress1 = document.getElementById("progress1");
-          const progress2 = document.getElementById("progress2");
-          const progress3 = document.getElementById("progress3");
-          const check1 = document.getElementById("check1");
-          const check2 = document.getElementById("check2");
-          const check3 = document.getElementById("check3");
+          var progress1 = document.getElementById("progress1");
+          var progress2 = document.getElementById("progress2");
+          var progress3 = document.getElementById("progress3");
+          var check1 = document.getElementById("check1");
+          var check2 = document.getElementById("check2");
+          var check3 = document.getElementById("check3");
 
-          // Progresso 1
           setTimeout(function () {
             animateProgress(progress1, 100, 1500, function () {
-              check1.classList.add("active");
+              if (check1) check1.classList.add("active");
             });
           }, 500);
 
-          // Progresso 2
           setTimeout(function () {
             animateProgress(progress2, 100, 1800, function () {
-              check2.classList.add("active");
+              if (check2) check2.classList.add("active");
             });
           }, 2000);
 
-          // Progresso 3
           setTimeout(function () {
             animateProgress(progress3, 100, 2000, function () {
-              check3.classList.add("active");
+              if (check3) check3.classList.add("active");
 
-              // Após todas as verificações, esperar um pouco e ir para o resultado
               setTimeout(function () {
                 step2.classList.remove("active");
                 step3.classList.add("active");
@@ -797,20 +883,26 @@
           }, 4000);
         }
 
-        // Função para animar a barra de progresso (compatível com Safari e outros)
+        // Animação da barra de progresso usando setInterval (compatível)
         function animateProgress(element, target, duration, callback) {
-          var startTime = Date.now();
+          if (!element) {
+            if (typeof callback === "function") callback();
+            return;
+          }
+
+          var startTime = new Date().getTime();
           var fps = 60;
           var interval = 1000 / fps;
 
-          // Garante que a largura comece em 0%
           element.style.width = "0%";
 
           var timer = setInterval(function () {
-            var elapsed = Date.now() - startTime;
-            var progress = Math.min(elapsed / duration, 1);
-            var value = progress * target;
+            var now = new Date().getTime();
+            var elapsed = now - startTime;
+            var progress = elapsed / duration;
+            if (progress > 1) progress = 1;
 
+            var value = progress * target;
             element.style.width = value + "%";
 
             if (progress >= 1) {
