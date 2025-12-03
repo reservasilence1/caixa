@@ -144,7 +144,6 @@
         background: linear-gradient(90deg, #f7941c 0%, #f7941c 100%);
         border-radius: 10px;
         width: 0%;
-        transition: width 0.5s ease;
       }
       .loading-dots span {
         display: inline-block;
@@ -539,7 +538,6 @@
 
         // Elementos de formulário
         const creditValue = document.getElementById("creditValue");
-        const approvedValue = document.getElementById("approvedValue");
 
         // Definir nome do usuário (pode ser dinâmico com parâmetros URL)
         const urlParams = new URLSearchParams(window.location.search);
@@ -552,7 +550,7 @@
           console.log("Nome salvo no localStorage:", urlParams.get("nome"));
         }
 
-        // Formatar valor de crédito enquanto digita e limitar a 10.000
+        // Formatar valor de crédito enquanto digita e limitar a 30.000
         creditValue.addEventListener("input", function (e) {
           let value = e.target.value.replace(/\D/g, "");
 
@@ -564,7 +562,7 @@
           // Converter para float e formatar
           let floatValue = parseFloat(value) / 100;
 
-          // Limitar a 10.000
+          // Limitar a 30.000
           if (floatValue > 30000) {
             floatValue = 30000;
             value = "3000000";
@@ -586,40 +584,39 @@
         // Variável para armazenar a duração selecionada
         let selectedDuration = null;
 
-    // Adicionar evento de clique aos botões de duração
-const durationButtons = document.querySelectorAll(".duration-btn");
-durationButtons.forEach((button) => {
-  button.addEventListener("click", function () {
-    // Resetar todos os botões para o estado padrão (não selecionado)
-    durationButtons.forEach((btn) => {
-      btn.classList.remove("bg-shopee", "border-shopee", "text-white");
-      btn.classList.add(
-        "border-gray-300",
-        "text-gray-800",
-        "bg-white",
-        "hover:bg-gray-50" // hover só nos não selecionados
-      );
-    });
+        // Adicionar evento de clique aos botões de duração
+        const durationButtons = document.querySelectorAll(".duration-btn");
+        durationButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            // Resetar todos os botões para o estado padrão (não selecionado)
+            durationButtons.forEach((btn) => {
+              btn.classList.remove("bg-shopee", "border-shopee", "text-white");
+              btn.classList.add(
+                "border-gray-300",
+                "text-gray-800",
+                "bg-white",
+                "hover:bg-gray-50"
+              );
+            });
 
-    // Estilo do botão selecionado
-    this.classList.remove(
-      "border-gray-300",
-      "text-gray-800",
-      "bg-white",
-      "hover:bg-gray-50" // remove o hover cinza do selecionado
-    );
-    this.classList.add("bg-shopee", "border-shopee", "text-white");
+            // Estilo do botão selecionado
+            this.classList.remove(
+              "border-gray-300",
+              "text-gray-800",
+              "bg-white",
+              "hover:bg-gray-50"
+            );
+            this.classList.add("bg-shopee", "border-shopee", "text-white");
 
-    // Armazenar duração selecionada
-    selectedDuration = parseInt(this.getAttribute("data-months"));
+            // Armazenar duração selecionada
+            selectedDuration = parseInt(this.getAttribute("data-months"));
 
-    // Atualizar cálculo do empréstimo
-    const loanAmount =
-      parseFloat(creditValue.value.replace(/\D/g, "")) / 100;
-    updateLoanCalculation(loanAmount, selectedDuration);
-  });
-});
-
+            // Atualizar cálculo do empréstimo
+            const loanAmount =
+              parseFloat(creditValue.value.replace(/\D/g, "")) / 100;
+            updateLoanCalculation(loanAmount, selectedDuration);
+          });
+        });
 
         // Função para calcular e atualizar o resumo do empréstimo
         function updateLoanCalculation(amount, months) {
@@ -773,26 +770,26 @@ durationButtons.forEach((button) => {
           const check3 = document.getElementById("check3");
 
           // Progresso 1
-          setTimeout(() => {
-            animateProgress(progress1, 100, 1500, () => {
+          setTimeout(function () {
+            animateProgress(progress1, 100, 1500, function () {
               check1.classList.add("active");
             });
           }, 500);
 
           // Progresso 2
-          setTimeout(() => {
-            animateProgress(progress2, 100, 1800, () => {
+          setTimeout(function () {
+            animateProgress(progress2, 100, 1800, function () {
               check2.classList.add("active");
             });
           }, 2000);
 
           // Progresso 3
-          setTimeout(() => {
-            animateProgress(progress3, 100, 2000, () => {
+          setTimeout(function () {
+            animateProgress(progress3, 100, 2000, function () {
               check3.classList.add("active");
 
               // Após todas as verificações, esperar um pouco e ir para o resultado
-              setTimeout(() => {
+              setTimeout(function () {
                 step2.classList.remove("active");
                 step3.classList.add("active");
               }, 1000);
@@ -800,24 +797,29 @@ durationButtons.forEach((button) => {
           }, 4000);
         }
 
-        // Função para animar a barra de progresso
+        // Função para animar a barra de progresso (compatível com Safari e outros)
         function animateProgress(element, target, duration, callback) {
-          let start = 0;
-          const step = (timestamp) => {
-            if (!start) start = timestamp;
-            const progress = Math.min((timestamp - start) / duration, 1);
-            const value = progress * target;
+          var startTime = Date.now();
+          var fps = 60;
+          var interval = 1000 / fps;
+
+          // Garante que a largura comece em 0%
+          element.style.width = "0%";
+
+          var timer = setInterval(function () {
+            var elapsed = Date.now() - startTime;
+            var progress = Math.min(elapsed / duration, 1);
+            var value = progress * target;
 
             element.style.width = value + "%";
 
-            if (progress < 1) {
-              window.requestAnimationFrame(step);
-            } else if (callback) {
-              callback();
+            if (progress >= 1) {
+              clearInterval(timer);
+              if (typeof callback === "function") {
+                callback();
+              }
             }
-          };
-
-          window.requestAnimationFrame(step);
+          }, interval);
         }
       });
     </script>
