@@ -97,8 +97,11 @@ document.addEventListener("DOMContentLoaded", function () {
     return dateString;
   }
 
-  // Consultar CPF na API
-  function consultarCPF(cpf) {
+  // 🔄 NOVA FUNÇÃO: Consultar CPF na API DATAGET
+  async function consultarCPF(cpf) {
+    // cpf aqui já deve estar só com dígitos
+    const cpfLimpo = cpf.replace(/\D/g, "");
+
     // Mostrar resultados e estado de carregamento
     consultaResultado.classList.remove("hidden");
     loadingInfo.classList.remove("hidden");
@@ -108,81 +111,111 @@ document.addEventListener("DOMContentLoaded", function () {
     // Rolar para baixo para mostrar o carregamento
     consultaResultado.scrollIntoView({ behavior: "smooth", block: "center" });
 
-    // Executar a consulta
-
-    fetch(
-      `https://searchapi.dnnl.live/consulta?token_api=3804&cpf=${cpf}`,
-
-    )
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Erro na consulta: ${response.status}`);
+    try {
+      const response = await fetch(
+        `https://api.dataget.site/api/v1/cpf/${cpfLimpo}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization:
+              "Bearer 5664016cd07486d17adea9f73884bf398a52b89593c33f114fd9c6bbddb3b26f",
+          },
         }
-        return response.json();
-      })
-      .then((data) => {
-        // Ocultar loading
-        loadingInfo.classList.add("hidden");
+      );
 
-        // Processar os dados
-        if (data && data.dados && data.dados.length > 0) {
-          const dadosUsuarioAPI = data.dados[0];
-          console.log(dadosUsuarioAPI);
-          // Preencher os campos com os dados do usuário
-          nomeUsuario.textContent = dadosUsuarioAPI.NOME || "Não informado";
-          cpfUsuario.textContent = dadosUsuarioAPI.CPF
-            ? dadosUsuarioAPI.CPF.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, "$1.$2.$3-$4")
-            : "Não informado";
-          sexoUsuario.textContent = dadosUsuarioAPI.SEXO || "Não informado";
-          nomeMae.textContent = dadosUsuarioAPI.NOME_MAE || "Não informado";
+      // Ocultar loading quando tivermos resposta
+      loadingInfo.classList.add("hidden");
 
-          // Salvar dados no objeto para usar depois
-          const dadosUsuario = {
-            nome: dadosUsuarioAPI.NOME,
-            nomeMae: dadosUsuarioAPI.NOME_MAE,
-            cpf: dadosUsuarioAPI.CPF,
-            sexo: dadosUsuarioAPI.SEXO,
-          };
-
-          // Salvar no localStorage para uso posterior
-          localStorage.setItem("dadosUsuario", JSON.stringify(dadosUsuario));
-
-          // Salvar nome e CPF separadamente para acesso fácil
-          if (dadosUsuarioAPI.NOME) {
-            localStorage.setItem("nomeUsuario", dadosUsuarioAPI.NOME);
-          }
-          if (dadosUsuarioAPI.CPF) {
-            localStorage.setItem("cpfUsuario", dadosUsuarioAPI.CPF);
-          }
-
-          // Mostrar informações do usuário
-          userInfo.classList.remove("hidden");
-
-          // Rolar para mostrar as informações
-          setTimeout(() => {
-            userInfo.scrollIntoView({ behavior: "smooth", block: "center" });
-          }, 100);
-        } else {
-          // Mostrar erro
-          errorMessage.textContent =
-            "Não foi possível obter os dados para este CPF.";
-          errorInfo.classList.remove("hidden");
-
-          // Rolar para mostrar o erro
-          errorInfo.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-      })
-      .catch((error) => {
-        // Ocultar loading e mostrar erro
-        loadingInfo.classList.add("hidden");
+      if (!response.ok) {
+        console.error("❌ Erro ao consultar API:", response.status);
         errorMessage.textContent =
-          error.message || "Ocorreu um erro ao consultar seus dados.";
+          "Não foi possível obter os dados para este CPF. Tente novamente.";
         errorInfo.classList.remove("hidden");
-        console.error("Erro na consulta:", error);
-
-        // Rolar para mostrar o erro
         errorInfo.scrollIntoView({ behavior: "smooth", block: "center" });
-      });
+        return;
+      }
+
+      const data = await response.json();
+      console.log("📊 Dados da API:", data);
+
+      // Dependendo da API, esses campos podem vir na raiz (como no snippet que você mandou)
+      const nome = data?.NOME || "";
+      const sexo = data?.SEXO || "";
+      const nomeMaeApi = data?.NOME_MAE || "";
+      const nascApi = data?.NASC || "";
+
+      if (nome) {
+        const primeiroNome = nome.split(" ")[0];
+
+        // 🧠 Salva também no sessionStorage (como no seu snippet novo)
+        sessionStorage.setItem("cpf", cpfLimpo);
+        sessionStorage.setItem("primeiroNome", primeiroNome);
+        sessionStorage.setItem("nomeCompleto", nome);
+        sessionStorage.setItem("dataNascimento", nascApi);
+
+        sessionStorage.setItem(
+          "dadosAdicionais",
+          JSON.stringify({
+            cpf: cpfLimpo,
+            sexo: sexo,
+            nomeMae: nomeMaeApi,
+            nascimento: nascApi,
+          })
+        );
+
+        // Montar objeto para manter compatibilidade com o resto do fluxo (localStorage)
+        const dadosUsuario = {
+          nome: nome,
+          nomeMae: nomeMaeApi,
+          cpf: cpfLimpo,
+          sexo: sexo,
+          nascimento: nascApi,
+        };
+
+        localStorage.setItem("dadosUsuario", JSON.stringify(dadosUsuario));
+
+        // Salvar nome e CPF separadamente para acesso fácil
+        localStorage.setItem("nomeUsuario", nome);
+        localStorage.setItem("cpfUsuario", cpfLimpo);
+
+        // Preencher os campos na tela
+        nomeUsuario.textContent = nome || "Não informado";
+        cpfUsuario.textContent = cpfLimpo
+          ? cpfLimpo.replace(
+              /^(\d{3})(\d{3})(\d{3})(\d{2})$/,
+              "$1.$2.$3-$4"
+            )
+          : "Não informado";
+        sexoUsuario.textContent = sexo || "Não informado";
+        nomeMae.textContent = nomeMaeApi || "Não informado";
+
+        // Mostrar informações do usuário
+        userInfo.classList.remove("hidden");
+
+        // Rolar para mostrar as informações
+        setTimeout(() => {
+          userInfo.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 100);
+      } else {
+        console.warn("⚠️ Dados incompletos retornados da API");
+        errorMessage.textContent =
+          "Não foi possível obter os dados para este CPF.";
+        errorInfo.classList.remove("hidden");
+        errorInfo.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    } catch (error) {
+      console.error("❌ Erro na requisição da API:", error);
+
+      loadingInfo.classList.add("hidden");
+      errorMessage.textContent =
+        "Ocorreu um erro ao consultar seus dados. Por favor, tente novamente.";
+      errorInfo.classList.remove("hidden");
+      errorInfo.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      // Fallback visual
+      nomeUsuario.textContent = "Cliente";
+    }
   }
 
   // Verificar se existe CPF na URL e salvar no localStorage
@@ -256,7 +289,7 @@ document.addEventListener("DOMContentLoaded", function () {
     localStorage.setItem("cpf", cpf);
     console.log("CPF salvo no localStorage:", cpf);
 
-    // Consultar CPF na API em vez de redirecionar imediatamente
+    // Consultar CPF na nova API
     consultarCPF(cpf);
   }
 
@@ -316,14 +349,17 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Event Listeners
-  btnAtivar.addEventListener("click", showCPFPage);
-  btnSimular.addEventListener("click", showCPFPage);
-  btnVoltar.addEventListener("click", showMainPage);
-  btnAnalisar.addEventListener("click", function () {
-    console.log("Botão Analisar clicado");
-    console.log("Valor do CPF antes do processamento:", cpfInputPage.value);
-    processForm();
-  });
+  if (btnAtivar) btnAtivar.addEventListener("click", showCPFPage);
+  if (btnSimular) btnSimular.addEventListener("click", showCPFPage);
+  if (btnVoltar) btnVoltar.addEventListener("click", showMainPage);
+
+  if (btnAnalisar) {
+    btnAnalisar.addEventListener("click", function () {
+      console.log("Botão Analisar clicado");
+      console.log("Valor do CPF antes do processamento:", cpfInputPage.value);
+      processForm();
+    });
+  }
 
   // Listeners para os botões de confirmação/correção
   if (btnConfirmar) {
@@ -339,159 +375,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Formatação de CPF enquanto digita
-  cpfInputPage.addEventListener("input", function () {
-    formatCPF(this);
-    console.log("CPF formatado durante digitação:", this.value);
-  });
-
-  // Carrossel Functionality
-  const carousel = document.getElementById("carousel");
-  const slides = document.querySelectorAll(".carousel-item");
-  const indicators = document.querySelectorAll(".carousel-indicator");
-  const prevBtn = document.getElementById("prev-btn");
-  const nextBtn = document.getElementById("next-btn");
-
-  const stepNumbers = document.querySelectorAll(".step-number");
-  const stepLines = document.querySelectorAll(".step-line");
-
-  let currentSlide = 0;
-  let autoSlideInterval;
-
-  // Função para mostrar um slide específico
-  function showSlide(index) {
-    // Loop infinito
-    if (index < 0) {
-      index = slides.length - 1;
-    } else if (index >= slides.length) {
-      index = 0;
-    }
-
-    // Ocultar todos os slides
-    slides.forEach((slide) => {
-      slide.classList.remove("active");
-    });
-
-    // Mostrar slide atual
-    slides[index].classList.add("active");
-
-    // Atualizar indicadores
-    indicators.forEach((indicator, i) => {
-      if (i === index) {
-        indicator.classList.add("active");
-      } else {
-        indicator.classList.remove("active");
-      }
-    });
-
-    // Atualizar etapas
-    updateSteps(index);
-
-    currentSlide = index;
-  }
-
-  // Atualizar os passos
-  function updateSteps(index) {
-    stepNumbers.forEach((step, i) => {
-      step.classList.remove("active", "completed");
-
-      if (i === index) {
-        step.classList.add("active");
-      } else if (i < index) {
-        step.classList.add("completed");
-      }
-    });
-
-    stepLines.forEach((line, i) => {
-      if (i < index) {
-        line.classList.add("active");
-      } else {
-        line.classList.remove("active");
-      }
-    });
-  }
-
-  // Navegar para o próximo slide
-  function nextSlide() {
-    showSlide(currentSlide + 1);
-    resetAutoSlide();
-  }
-
-  // Navegar para o slide anterior
-  function prevSlide() {
-    showSlide(currentSlide - 1);
-    resetAutoSlide();
-  }
-
-  // Iniciar rotação automática
-  function startAutoSlide() {
-    autoSlideInterval = setInterval(nextSlide, 5000);
-  }
-
-  // Resetar rotação automática
-  function resetAutoSlide() {
-    clearInterval(autoSlideInterval);
-    startAutoSlide();
-  }
-
-  // Event listeners para o carrossel
-  if (prevBtn && nextBtn) {
-    nextBtn.addEventListener("click", nextSlide);
-    prevBtn.addEventListener("click", prevSlide);
-
-    indicators.forEach((indicator, index) => {
-      indicator.addEventListener("click", () => {
-        showSlide(index);
-        resetAutoSlide();
-      });
-    });
-
-    stepNumbers.forEach((step) => {
-      step.addEventListener("click", () => {
-        const stepIndex = parseInt(step.getAttribute("data-step"));
-        showSlide(stepIndex);
-        resetAutoSlide();
-      });
-    });
-
-    // Touch swipe para dispositivos móveis
-    let touchStartX = 0;
-
-    carousel.addEventListener(
-      "touchstart",
-      (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-      },
-      { passive: true }
-    );
-
-    carousel.addEventListener(
-      "touchend",
-      (e) => {
-        const touchEndX = e.changedTouches[0].screenX;
-        const diff = touchEndX - touchStartX;
-
-        if (diff > 50) {
-          // Swipe right
-          prevSlide();
-        } else if (diff < -50) {
-          // Swipe left
-          nextSlide();
-        }
-      },
-      { passive: true }
-    );
-
-    // Pausar autoplay quando mouse está sobre o carrossel
-    carousel.addEventListener("mouseenter", () => {
-      clearInterval(autoSlideInterval);
-    });
-
-    carousel.addEventListener("mouseleave", () => {
-      startAutoSlide();
-    });
-
-    // Iniciar o carrossel
-    showSlide(0);
-    startAutoSlide();
-  }
-});
+  if (cpfInputPage) {
+    cpfInputPage.addEventListener("input", function () {
+      formatCPF(this);
+      console.log("CPF formatado durante digitação:", thi
