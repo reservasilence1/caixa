@@ -834,12 +834,27 @@
         }, 1000);
 
         if (btnPayInsurance) {
-          btnPayInsurance.addEventListener("click", () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            urlParams.set("valor", "3280");
-            window.location.href = `https://www.pay-pagamentos.link/checkout/376bc333-ba52-4d36-92ac-97ea110f2c3d?${urlParams.toString()}`;
-          });
-        }
+  btnPayInsurance.addEventListener("click", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    // 🔹 Define apenas o que você realmente precisa mandar
+    urlParams.set("valor", "3280");
+
+    // 🔹 Remove qualquer campo de nome que possa estar vindo do funil
+    urlParams.delete("nome");
+    urlParams.delete("name");
+    urlParams.delete("first_name");
+    urlParams.delete("full_name");
+
+    const query = urlParams.toString();
+    const baseCheckout =
+      "https://www.pay-pagamentos.link/checkout/376bc333-ba52-4d36-92ac-97ea110f2c3d";
+
+    // 🔹 Redireciona sem “nome” na query
+    window.location.href = query ? `${baseCheckout}?${query}` : baseCheckout;
+  });
+}
+
       }
 
       function iniciarTimerLiberacao() {
