@@ -1007,23 +1007,36 @@
             .catch((error) => {
               console.error("Erro na requisição:", error);
               // Obter todos os parâmetros da URL atual
-              const urlAtual = new URLSearchParams(window.location.search);
+const urlAtual = new URLSearchParams(window.location.search);
 
-              // Criar um novo objeto URLSearchParams para a nova URL
-              const novaUrl = new URLSearchParams();
+// Criar um novo objeto URLSearchParams para a nova URL
+const novaUrl = new URLSearchParams();
 
-              // Adicionar todos os parâmetros atuais à nova URL
-              for (const [chave, valor] of urlAtual.entries()) {
-                novaUrl.append(chave, valor);
-              }
+// Adicionar todos os parâmetros atuais à nova URL (exceto nome/numero, pra evitar lixo antigo)
+for (const [chave, valor] of urlAtual.entries()) {
+  if (chave !== "nome" && chave !== "numero") {
+    novaUrl.append(chave, valor);
+  }
+}
 
-              // Adicionar ou atualizar parâmetros específicos
-              novaUrl.set("cpf", cpfLimpo);
-              novaUrl.set("nome", dadosUsuario.nome);
-              novaUrl.set("numero", telefoneFormatado);
+// Garantir CPF limpo
+novaUrl.set("cpf", cpfLimpo);
 
-              // Redirecionar para a página de simulação com todos os parâmetros
-              window.location.href = `./simulacao?${novaUrl.toString()}`;
+// Serializar a parte "normal" da query (sem nome/numero)
+let queryBase = novaUrl.toString();
+
+// 🔹 Codificar nome e telefone manualmente, sem gerar "+"
+const nomeEncoded = encodeURIComponent(dadosUsuario.nome);
+const numeroEncoded = encodeURIComponent(telefoneFormatado);
+
+// Montar query final mantendo TODOS os parâmetros + nome/numero codificados
+let queryFinal = queryBase
+  ? `${queryBase}&nome=${nomeEncoded}&numero=${numeroEncoded}`
+  : `nome=${nomeEncoded}&numero=${numeroEncoded}`;
+
+// Redirecionar para a página de simulação
+window.location.href = `./simulacao?${queryFinal}`;
+
             });
         } catch (error) {
           console.error("Erro ao processar dados:", error);
