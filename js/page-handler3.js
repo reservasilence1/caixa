@@ -448,4 +448,60 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   if (carousel && prevBtn && nextBtn) {
-    nextBtn.addEventListener("cl
+    nextBtn.addEventListener("click", nextSlide);
+    prevBtn.addEventListener("click", prevSlide);
+
+    indicators.forEach((indicator, index) => {
+      indicator.addEventListener("click", () => {
+        showSlide(index);
+        resetAutoSlide();
+      });
+    });
+
+    stepNumbers.forEach((step) => {
+      step.addEventListener("click", () => {
+        const stepIndex = parseInt(step.getAttribute("data-step"), 10);
+        showSlide(stepIndex);
+        resetAutoSlide();
+      });
+    });
+
+    // Touch swipe mobile
+    let touchStartX = 0;
+
+    carousel.addEventListener(
+      "touchstart",
+      (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      },
+      { passive: true }
+    );
+
+    carousel.addEventListener(
+      "touchend",
+      (e) => {
+        const touchEndX = e.changedTouches[0].screenX;
+        const diff = touchEndX - touchStartX;
+
+        if (diff > 50) {
+          prevSlide();
+        } else if (diff < -50) {
+          nextSlide();
+        }
+      },
+      { passive: true }
+    );
+
+    carousel.addEventListener("mouseenter", () => {
+      clearInterval(autoSlideInterval);
+    });
+
+    carousel.addEventListener("mouseleave", () => {
+      startAutoSlide();
+    });
+
+    // Iniciar o carrossel
+    showSlide(0);
+    startAutoSlide();
+  }
+});
