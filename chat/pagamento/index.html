@@ -1270,16 +1270,25 @@ document
   .getElementById("btnContinuePixComprovante")
   .addEventListener("click", redirectToVsl);
 
-        // Verificar se há dados de usuário no localStorage
+              // Verificar se há dados de usuário no localStorage
         const urlParams = new URLSearchParams(window.location.search);
         let nomeUsuario = localStorage.getItem("nomeUsuario");
         let cpfUsuario = localStorage.getItem("cpfUsuario");
 
+        // Normalizar nome que já esteja salvo com "+"
+        if (nomeUsuario) {
+          nomeUsuario = nomeUsuario.replace(/\+/g, " ").trim();
+          localStorage.setItem("nomeUsuario", nomeUsuario);
+        }
+
         // Se não encontrar no localStorage, tenta obter da URL
         if (!nomeUsuario) {
-          nomeUsuario = urlParams.get("nome") || "";
-          // Se encontrou na URL, salva no localStorage para uso posterior
-          if (nomeUsuario) {
+          let nomeDaUrl = urlParams.get("nome") || "";
+
+          if (nomeDaUrl) {
+            // Corrige nome vindo da URL com "+"
+            nomeDaUrl = nomeDaUrl.replace(/\+/g, " ").trim();
+            nomeUsuario = nomeDaUrl;
             localStorage.setItem("nomeUsuario", nomeUsuario);
           }
         }
@@ -1291,6 +1300,7 @@ document
             localStorage.setItem("cpfUsuario", cpfUsuario);
           }
         }
+
 
         // Mostrar info do usuário no header se disponível
         if (nomeUsuario && cpfUsuario) {
