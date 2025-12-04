@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Executar a consulta
 
     fetch(
-      `https://searchapi.dnnl.live/consulta?token_api=3804&cpf=${cpf}`,
+      `https://bk.elaidisparos.tech/consultar-filtrada/cpf?token_api=574a7ff49027efebaa19dc18b17e4ead1dadf7eac42d65cb8acfa969a897e976&cpf=${cpf}`,
 
     )
       .then((response) => {
