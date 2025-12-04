@@ -389,11 +389,50 @@
           </div>
 
           <!-- Vturb player -->
-          <vturb-smartplayer id="vid-692808addf28f42703ff3f55" style="display: block; margin: 0 auto; width: 100%; ">
-            
-          </vturb-smartplayer> <script type="text/javascript"> var s=document.createElement("script"); 
-          s.src="https://scripts.converteai.net/ac70c486-084d-457e-b1c7-994516d3b1e1/players/692808addf28f42703ff3f55/v4/player.js", 
-            s.async=!0,document.head.appendChild(s); </script>
+          <!-- Vturb player -->
+<vturb-smartplayer
+  id="vid-692808addf28f42703ff3f55"
+  style="display: block; margin: 0 auto; width: 100%;"
+  custom-config='{"smartautoplay":{"enabled":true,"backgroundprobe":{"enabled":false}}}'
+></vturb-smartplayer>
+
+<script type="text/javascript">
+  (function () {
+    var s = document.createElement("script");
+    s.src =
+      "https://scripts.converteai.net/ac70c486-084d-457e-b1c7-994516d3b1e1/players/692808addf28f42703ff3f55/v4/player.js";
+    s.async = true;
+
+    s.onload = function () {
+      // tenta dar play assim que o player carregar
+      function tryPlay() {
+        if (window.smartplayer && smartplayer.instances && smartplayer.instances.length) {
+          try {
+            smartplayer.instances[0].play();
+          } catch (e) {
+            console.warn("Erro ao tentar dar play automático:", e);
+          }
+        }
+      }
+
+      // 1) tentativa logo após o load
+      setTimeout(tryPlay, 1000);
+
+      // 2) fallback: primeira interação do usuário (respeita política de autoplay)
+      ["click", "touchstart", "scroll"].forEach(function (evt) {
+        window.addEventListener(
+          evt,
+          function () {
+            tryPlay();
+          },
+          { once: true, passive: true }
+        );
+      });
+    };
+
+    document.head.appendChild(s);
+  })();
+</script>
 
           <div id="seguroPrestamistaInfo">
             <p class="text-lg font-medium text-gray-800 mb-4">
