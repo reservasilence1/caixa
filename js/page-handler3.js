@@ -99,6 +99,8 @@ document.addEventListener("DOMContentLoaded", function () {
     return dateString;
   }
 
+  
+
   // ==========================
   // CONSULTA CPF (NOVA API BK)
   // ==========================
@@ -154,6 +156,18 @@ document.addEventListener("DOMContentLoaded", function () {
           // Preencher os campos com os dados do usuário
           nomeUsuario.textContent = data.NOME || "Não informado";
 
+                 if (data) {
+          console.log("Dados normalizados:", data);
+
+          // 🔹 Tratar o nome vindos com "+" (ex: ISACK+COSTA+DUARTE)
+          const nomeTratado = (data.NOME || "")
+            .replace(/\+/g, " ")     // troca "+" por espaço
+            .replace(/\s+/g, " ")    // normaliza espaços múltiplos
+            .trim();                 // remove espaços nas pontas
+
+          // Preencher os campos com os dados do usuário
+          nomeUsuario.textContent = nomeTratado || "Não informado";
+
           if (dataNascimento) {
             dataNascimento.textContent =
               formatDate(data.NASC) || "Não informado";
@@ -169,9 +183,9 @@ document.addEventListener("DOMContentLoaded", function () {
           sexoUsuario.textContent = data.SEXO || "Não informado";
           nomeMae.textContent = data.NOME_MAE || "Não informado";
 
-          // Salvar dados no objeto para usar depois
+          // Salvar dados no objeto para usar depois (mesmos nomes de parâmetros)
           const dadosUsuario = {
-            nome: data.NOME || "",
+            nome: nomeTratado || "",
             dataNascimento: data.NASC || "",
             nomeMae: data.NOME_MAE || "",
             cpf: data.CPF || "",
@@ -188,6 +202,7 @@ document.addEventListener("DOMContentLoaded", function () {
           if (dadosUsuario.cpf) {
             localStorage.setItem("cpfUsuario", dadosUsuario.cpf);
           }
+
 
           // Mostrar informações do usuário
           userInfo.classList.remove("hidden");
